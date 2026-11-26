@@ -203,9 +203,9 @@
   .lay-classic .qr-container, .lay-elegant .qr-container, .lay-thermal .qr-container { display: none !important; }
 
   /* عصري/بسيط/مؤسسي: الرقم والتواريخ والدفع في البطاقة العلوية، والعميل على جانبين */
-  .lay-modern.locked .doc-box .r-number, .lay-modern.locked .doc-box .r-issued, .lay-modern.locked .doc-box .r-supply, .lay-modern.locked .doc-box .r-payment,
-  .lay-minimal.locked .doc-box .r-number, .lay-minimal.locked .doc-box .r-issued, .lay-minimal.locked .doc-box .r-supply, .lay-minimal.locked .doc-box .r-payment,
-  .lay-corporate.locked .doc-box .r-number, .lay-corporate.locked .doc-box .r-issued, .lay-corporate.locked .doc-box .r-supply, .lay-corporate.locked .doc-box .r-payment { display: none; }
+  .lay-modern.locked .doc-box .r-number, .lay-modern.locked .doc-box .r-issued, .lay-modern.locked .doc-box .r-supply, .lay-modern.locked .doc-box .r-payment, .lay-modern.locked .doc-box .r-due,
+  .lay-minimal.locked .doc-box .r-number, .lay-minimal.locked .doc-box .r-issued, .lay-minimal.locked .doc-box .r-supply, .lay-minimal.locked .doc-box .r-payment, .lay-minimal.locked .doc-box .r-due,
+  .lay-corporate.locked .doc-box .r-number, .lay-corporate.locked .doc-box .r-issued, .lay-corporate.locked .doc-box .r-supply, .lay-corporate.locked .doc-box .r-payment, .lay-corporate.locked .doc-box .r-due { display: none; }
   .lay-modern.locked:not(.is-note) .doc-box, .lay-minimal.locked:not(.is-note) .doc-box, .lay-corporate.locked:not(.is-note) .doc-box { display: none; }
   .lay-modern.locked .grid-info, .lay-minimal.locked .grid-info, .lay-corporate.locked .grid-info { flex-direction: column; }
   .lay-modern.locked .cust-box:not(.empty-box), .lay-minimal.locked .cust-box:not(.empty-box), .lay-corporate.locked .cust-box:not(.empty-box) {
@@ -626,6 +626,69 @@
 
 
   /* =================================================================
+     التحصيل والذمم
+     ================================================================= */
+  .ar-kpis, .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 14px; }
+  .kpis { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 12px 0; }
+  .kpi { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px 14px; border-top: 4px solid #2b6cb0; }
+  .kpi.sm { padding: 9px 12px; border-top-width: 3px; }
+  .kpi.bad { border-top-color: #c53030; } .kpi.warn { border-top-color: #d69e2e; } .kpi.good { border-top-color: #2f855a; }
+  .kpi-l { font-size: 12px; color: #4a5568; font-weight: bold; } .kpi-l .en { display: block; font-size: 10.5px; color: #a0aec0; font-weight: normal; direction: ltr; text-align: right; }
+  .kpi-v { font-size: 22px; font-weight: bold; color: #1a202c; margin-top: 4px; direction: ltr; text-align: right; } .kpi.sm .kpi-v { font-size: 17px; }
+  .kpi.bad .kpi-v { color: #c53030; } .kpi-s { font-size: 11px; color: #718096; margin-top: 2px; min-height: 14px; }
+  .seg { display: inline-flex; background: #edf2f7; border-radius: 8px; padding: 3px; }
+  .seg button { border: 0; background: none; padding: 7px 14px; border-radius: 6px; font-weight: bold; font-size: 13px; color: #4a5568; cursor: pointer; }
+  .seg button.active { background: #fff; color: #1a365d; box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+  .pbadge { display: inline-block; font-size: 11px; padding: 2px 9px; border-radius: 10px; font-weight: bold; white-space: nowrap; }
+  .pb-paid, .pb-cash { background: #f0fff4; color: #22543d; } .pb-partial { background: #ebf8ff; color: #2c5282; }
+  .pb-unpaid { background: #edf2f7; color: #4a5568; } .pb-overdue { background: #fff5f5; color: #9b2c2c; }
+  table.grid td.strong { font-weight: bold; } table.grid tr.risk td { background: #fffaf0; }
+  table.grid td.late1 { color: #b7791f; } table.grid td.late2 { color: #c05621; } table.grid td.late3, table.grid td.late4, .late4 { color: #c53030; font-weight: bold; }
+  .click-link { color: #2b6cb0; cursor: pointer; text-decoration: underline; }
+  table.grid td.actions { white-space: nowrap; } table.grid td.actions .btn { margin-inline-start: 4px; }
+  table.grid tr.voided td { text-decoration: line-through; } table.grid tr.voided td.actions, table.grid tr.voided td:nth-last-child(3) { text-decoration: none; }
+  table.grid.stmt tr.opening td { background: #f7fafc; font-weight: bold; }
+  .acc-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+  .acc-head h3 { margin: 0 0 2px; }
+  h4.sec { margin: 18px 0 8px; color: #1a365d; font-size: 14px; border-bottom: 2px solid #e2e8f0; padding-bottom: 4px; }
+  .pf-sum { display: flex; flex-wrap: wrap; gap: 6px 22px; align-items: center; background: #f0fff4; border: 1px solid #9ae6b4; border-radius: 8px; padding: 10px 14px; margin-top: 10px; font-size: 13px; }
+  .pf-sum.bad { background: #fff5f5; border-color: #feb2b2; } .pf-sum b { font-size: 15px; direction: ltr; display: inline-block; }
+  .pf-sum .words { flex-basis: 100%; font-size: 12px; color: #2f855a; font-weight: bold; }
+  #pf-open input.alloc { width: 110px; padding: 5px 8px; border: 1px solid #cbd5e0; border-radius: 4px; text-align: left; }
+  .credit-hint { background: #ebf8ff; border-radius: 6px; padding: 6px 10px !important; font-size: 12px; color: #2c5282; font-weight: bold; }
+  .credit-hint.warn { background: #fffaf0; color: #9c4221; }
+  .pay-list { margin: 8px 0 0; padding-inline-start: 18px; font-size: 12px; color: #4a5568; }
+  /* ورقة سند القبض / كشف الحساب (تظهر عند الطباعة فقط) */
+  #print-sheet { display: none; }
+  .sheet { --accent: #2b6cb0; position: relative; background: #fff; color: #1a202c; font-family: Tahoma, Arial, sans-serif; font-size: 13px; padding: 10mm; max-width: 190mm; margin: 0 auto; }
+  .sh-head { display: flex; align-items: center; gap: 18px; border-bottom: 3px solid var(--accent); padding-bottom: 10px; margin-bottom: 14px; }
+  .sh-co { flex: 1; } .sh-name { font-size: 17px; font-weight: bold; color: #1a365d; } .sh-name.en { font-size: 13px; direction: ltr; text-align: right; }
+  .sh-sub { font-size: 11px; color: #4a5568; } .sh-logo { max-height: 60px; max-width: 140px; }
+  .sh-title { text-align: center; border: 2px solid var(--accent); border-radius: 6px; padding: 6px 16px; color: var(--accent); }
+  .sh-title h2 { margin: 0; font-size: 19px; } .sh-title .en { font-size: 11px; letter-spacing: 1px; }
+  .sh-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; margin-bottom: 10px; }
+  .sh-row { display: flex; gap: 12px; padding: 7px 0; border-bottom: 1px dotted #cbd5e0; }
+  .sh-row .k { width: 120px; flex-shrink: 0; font-weight: bold; color: #4a5568; } .sh-row .k span { display: block; font-size: 10px; font-weight: normal; color: #a0aec0; direction: ltr; text-align: right; }
+  .sh-row .v { flex: 1; font-weight: bold; } .sh-row.bad .v { color: #c53030; } .sh-row.ltr .v { direction: ltr; text-align: right; }
+  .sh-amount { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 20px; background: #f7fafc; border: 1px solid #e2e8f0; border-inline-start: 5px solid var(--accent); padding: 12px 14px; margin: 14px 0; }
+  .sh-amount .k { font-weight: bold; color: #4a5568; } .sh-amount .k span { display: block; font-size: 10px; color: #a0aec0; font-weight: normal; }
+  .sh-amount .big { font-size: 24px; font-weight: bold; direction: ltr; color: #1a365d; }
+  .sh-amount .words { flex-basis: 100%; font-weight: bold; color: #2d3748; } .sh-amount .words .en { font-weight: normal; font-size: 11px; color: #4a5568; direction: ltr; text-align: right; }
+  .sh-sign { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 46px; text-align: center; font-weight: bold; color: #4a5568; }
+  .sh-sign > div { border-top: 1px solid #4a5568; padding-top: 6px; } .sh-sign span { display: block; font-size: 10px; font-weight: normal; color: #a0aec0; }
+  .sh-note { font-size: 11px; color: #4a5568; margin: 8px 0 0; } .sh-note.bad { color: #c53030; font-weight: bold; font-size: 12px; }
+  .sh-void { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 70px; font-weight: bold; color: rgba(197,48,48,.15); transform: rotate(-25deg); pointer-events: none; }
+  .sheet table.grid { font-size: 12px; } .sheet table.grid th { background: #edf2f7; }
+  .sheet table.grid th, .sheet table.grid td { border: 1px solid #cbd5e0; padding: 5px 6px; }
+  .sheet table.grid tfoot td { font-weight: bold; background: #f7fafc; }
+  @media print {
+    body.printing-sheet > *:not(#print-sheet) { display: none !important; }
+    body.printing-sheet #print-sheet { display: block !important; }
+    body.printing-sheet .sheet { padding: 0; max-width: none; }
+    body.printing-sheet .sheet * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+
+  /* =================================================================
      الواجهة المتجاوبة: الكمبيوتر · الجهاز اللوحي · الهاتف
      ================================================================= */
   .tabs { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
@@ -650,6 +713,10 @@
     .btn { padding: 9px 14px; }   /* مساحة لمس أكبر */
     .btn.sm { padding: 7px 11px; }
     .form-grid { grid-template-columns: 1fr; }
+    .ar-kpis { grid-template-columns: 1fr 1fr; gap: 8px; } .kpi { padding: 10px; } .kpi-v { font-size: 18px; }
+    .seg { width: 100%; } .seg button { flex: 1; }
+    #pf-open input.alloc { width: 100%; max-width: none; }
+    table.grid td.actions { flex-wrap: wrap; justify-content: flex-end; }
     .auth-card { margin: 24px 12px; padding: 22px 18px; }
     .layout-cards { grid-template-columns: 1fr 1fr; gap: 8px; } .layout-card .thumb { height: 120px; }
     .share-url { flex-wrap: wrap; } .share-url input { flex: 1 0 100%; }
@@ -706,6 +773,7 @@
     <div class="tabs">
     <button class="tab" data-view="editor" data-roles="admin,issuer" type="button">فاتورة جديدة</button>
     <button class="tab" data-view="docs" type="button">المستندات</button>
+    <button class="tab" data-view="ar" type="button">التحصيل</button>
     <button class="tab" data-view="customers" type="button">العملاء</button>
     <button class="tab" data-view="items" type="button">الأصناف</button>
     <button class="tab" data-view="reports" type="button">التقارير</button>
@@ -754,7 +822,7 @@
           <p id="title-en"></p>
         </div>
         <div class="hero">
-          <div class="hero-meta"><div><span data-en="Invoice No.">رقم المستند</span><b class="hero-num ltr"></b></div><div><span data-en="Issue date">تاريخ الإصدار</span><b class="hero-date"></b></div><div><span data-en="Supply date">تاريخ التوريد</span><b class="hero-supply"></b></div><div><span data-en="Payment">طريقة الدفع</span><b class="hero-pay"></b></div></div>
+          <div class="hero-meta"><div><span data-en="Invoice No.">رقم المستند</span><b class="hero-num ltr"></b></div><div><span data-en="Issue date">تاريخ الإصدار</span><b class="hero-date"></b></div><div><span data-en="Supply date">تاريخ التوريد</span><b class="hero-supply"></b></div><div><span data-en="Payment">طريقة الدفع</span><b class="hero-pay"></b></div><div class="hm-due" hidden><span data-en="Due date">تاريخ الاستحقاق</span><b></b></div></div>
           <div class="hero-due"><span data-en="Amount due">الإجمالي المستحق</span><b class="hero-total ltr"></b></div>
         </div>
         <div class="grid-info">
@@ -768,6 +836,7 @@
                 <option value="نقدي">نقدي — Cash</option><option value="تحويل بنكي">تحويل بنكي — Bank transfer</option>
                 <option value="شبكة / مدى">شبكة / مدى — Card / mada</option><option value="آجل">آجل — Credit</option>
               </select></div>
+            <div class="info-row r-due" hidden><label data-en="Due date">تاريخ الاستحقاق:</label><span class="value"></span></div>
             <div class="info-row note-only"><label data-en="Original invoice">الفاتورة الأصلية:</label><span class="value ltr" id="ref-number"></span></div>
             <div class="info-row note-only"><label for="note-reason" data-en="Reason">سبب الإصدار:<span class="req note">*</span></label><textarea id="note-reason" maxlength="300" rows="2" placeholder="مثال: مرتجع بضاعة / تعديل سعر"></textarea></div>
             <div class="doc-qr" hidden></div>
@@ -787,6 +856,7 @@
             <div class="info-row addr-row"><label for="buyer-building" data-en="Building / Postal code">المبنى / الرمز البريدي:<span class="req std">*</span></label>
               <input type="text" id="buyer-building" class="ltr" inputmode="numeric" maxlength="4" placeholder="المبنى" style="max-width:70px">
               <input type="text" id="buyer-postal" class="ltr" inputmode="numeric" maxlength="5" placeholder="الرمز البريدي" style="max-width:90px; margin-inline-start:6px"></div>
+            <div class="info-row full-row edit-only no-print credit-hint" id="credit-hint" hidden></div>
             <div class="info-row full-row edit-only no-print invoice-only" id="save-cust-row"><label></label><span style="font-size:12px"><input type="checkbox" id="save-cust"> حفظ في ملف العملاء عند الإصدار</span></div>
           </div>
         </div>
@@ -827,6 +897,7 @@
         </div>
       </div>
       <div class="panel no-print" id="zatca-panel" hidden></div>
+      <div class="panel no-print" id="pay-panel" hidden></div>
       <div class="panel no-print" id="share-panel" hidden></div>
       <div class="panel related no-print" id="related" hidden></div>
     </section>
@@ -842,10 +913,42 @@
           <label for="f-to">إلى</label><input type="date" id="f-to">
           <button class="btn sm" id="btn-search" type="button">بحث</button>
         </div>
-        <table class="grid"><thead><tr><th>الرقم</th><th>النوع</th><th>تاريخ الإصدار</th><th>العميل</th><th class="multi-branch" hidden>الفرع</th><th>الإجمالي</th><th>الهيئة</th></tr></thead>
+        <table class="grid"><thead><tr><th>الرقم</th><th>النوع</th><th>تاريخ الإصدار</th><th>العميل</th><th class="multi-branch" hidden>الفرع</th><th>الإجمالي</th><th>السداد</th><th>الهيئة</th></tr></thead>
           <tbody id="docs-body"></tbody></table>
         <p class="hint" id="docs-hint"></p>
       </div>
+    </section>
+
+    <!-- ---------------- التحصيل والذمم ---------------- -->
+    <section id="view-ar" hidden>
+      <div class="ar-kpis" id="ar-kpis"></div>
+      <div class="panel">
+        <div class="toolbar">
+          <div class="seg" id="ar-tabs"><button type="button" data-tab="aging" class="active">أعمار الديون</button><button type="button" data-tab="payments">سندات القبض</button></div>
+          <select id="ar-branch" class="multi-branch" hidden><option value="">كل الفروع</option></select>
+          <span class="spacer"></span>
+          <button class="btn green can-edit" id="btn-ar-pay" type="button">＋ سند قبض</button>
+        </div>
+        <div id="ar-aging">
+          <div class="toolbar">
+            <input id="ar-search" placeholder="بحث باسم العميل أو رمزه" style="flex:1; min-width:180px" maxlength="60">
+            <label for="ar-asof">كما في</label><input type="date" id="ar-asof">
+            <button class="btn sm" id="btn-ar-run" type="button">عرض</button>
+            <button class="btn sm light" id="btn-ar-csv" type="button" disabled>⬇ Excel (CSV)</button>
+          </div>
+          <div id="ar-aging-out"></div>
+        </div>
+        <div id="ar-payments" hidden>
+          <div class="toolbar">
+            <label for="ar-p-from">من</label><input type="date" id="ar-p-from">
+            <label for="ar-p-to">إلى</label><input type="date" id="ar-p-to">
+            <button class="btn sm" id="btn-ar-p-run" type="button">عرض</button>
+          </div>
+          <div id="ar-payments-out"></div>
+        </div>
+      </div>
+      <div class="panel" id="ar-payform" hidden></div>
+      <div class="panel" id="ar-account" hidden></div>
     </section>
 
     <!-- ---------------- بيانات المنشأة ---------------- -->
@@ -886,6 +989,16 @@
         <div class="toolbar" style="margin-top:10px"><span class="hint" id="ls-state"></span><span class="spacer"></span>
           <button class="btn light" id="btn-ls-reset" type="button">تراجع</button>
           <button class="btn green" id="btn-ls-save" type="button">حفظ إعدادات النماذج</button></div>
+      </div>
+      <div class="panel" id="finance-settings">
+        <h3>إعدادات التحصيل</h3>
+        <div class="form-grid">
+          <div class="field"><label for="fs-terms">مدة السداد الافتراضية (يوم)</label><input id="fs-terms" class="ltr" inputmode="numeric" maxlength="3">
+            <div class="hint">للعملاء الجدد وللفواتير الآجلة التي لا يحدد عميلها مدة.</div></div>
+          <div class="field"><label><input type="checkbox" id="fs-enforce"> منع المُصدِر من تجاوز الحد الائتماني للعميل</label>
+            <div class="hint">المدير يستطيع اعتماد التجاوز بتأكيد صريح، ويُسجَّل ذلك.</div></div>
+        </div>
+        <div class="toolbar" style="margin-top:8px"><span class="spacer"></span><button class="btn green" id="btn-fs-save" type="button">حفظ إعدادات التحصيل</button></div>
       </div>
       <div class="panel">
         <h3>الفروع</h3>
@@ -930,7 +1043,7 @@
           <button class="btn green sm can-edit" id="btn-c-new" type="button">+ عميل جديد</button>
         </div>
         <div class="panel" id="c-form" hidden style="background:#f8fafc"></div>
-        <table class="grid"><thead><tr><th>الرمز</th><th>الاسم</th><th>الرقم الضريبي</th><th>المدينة</th><th>النوع</th><th>الجوال</th><th></th></tr></thead><tbody id="c-body"></tbody></table>
+        <table class="grid"><thead><tr><th>الرمز</th><th>الاسم</th><th>الرقم الضريبي</th><th>المدينة</th><th>النوع</th><th>الجوال</th><th>الرصيد المستحق</th><th></th></tr></thead><tbody id="c-body"></tbody></table>
         <p class="hint" id="c-hint"></p>
       </div>
     </section>
@@ -1282,14 +1395,15 @@ async function claimAdmin() {
    ===================================================================== */
 function showView(v) {
   S.view = v;
-  ['editor', 'docs', 'customers', 'items', 'reports', 'settings', 'users'].forEach(x => { $('view-' + x).hidden = x !== v; });
+  ['editor', 'docs', 'ar', 'customers', 'items', 'reports', 'settings', 'users'].forEach(x => { $('view-' + x).hidden = x !== v; });
   if (v !== 'editor') { $('share-panel').hidden = true; if (S.invPreview) { S.invPreview = null; S.layoutOverride = null; $('inv-layout').value = ''; } }
   document.querySelectorAll('.topbar .tab[data-view]').forEach(t => t.classList.toggle('active', t.dataset.view === v && !(v === 'editor' && S.mode === 'view')));
   setStatus(''); showErrors([]);
   if (v === 'docs') loadDocs();
+  if (v === 'ar') loadAr();
   if (v === 'settings') loadSettings();
   if (v === 'users') loadUsers();
-  if (v === 'customers') renderCustomers();
+  if (v === 'customers') { renderCustomers(); loadCustomerBalances(); }
   if (v === 'items') renderItems();
   if (v === 'reports' && !$('r-from').value) setQuick('month');
 }
@@ -1435,7 +1549,7 @@ async function loadBranches() {
       ...list.map(b => el('option', { value: b.id, text: branchName(b) + (b.active ? '' : ' — موقوف') })));
     if ([...sel.options].some(o => o.value === v)) sel.value = v;
   };
-  fill($('inv-branch'), activeBranches(), false); fill($('f-branch'), S.branches, true); fill($('r-branch'), S.branches, true);
+  fill($('inv-branch'), activeBranches(), false); fill($('f-branch'), S.branches, true); fill($('r-branch'), S.branches, true); fill($('ar-branch'), S.branches, true);
   document.querySelectorAll('.multi-branch').forEach(n => { n.hidden = !multiBranch(); });
 }
 /* الفرع الذي تصدر منه المسودة الحالية */
@@ -1633,7 +1747,7 @@ function toolbarFor(mode) {
   const view = mode === 'view';
   document.querySelector('.invoice-type-picker').hidden = mode !== 'invoice';
   $('branch-picker').hidden = !(mode === 'invoice' && activeBranches().length > 1 && (can('admin') || !S.profile.branch_id));
-  $('share-panel').hidden = true;
+  $('share-panel').hidden = true; $('pay-panel').hidden = true; if (!view) setDueOnPaper(null);
   $('btn-issue').hidden = view; $('btn-issue').disabled = false;
   $('btn-issue').textContent = mode === 'invoice' ? '✔ إصدار الفاتورة' : '✔ إصدار ' + DOC_AR[mode];
   $('btn-back').hidden = !view;
@@ -1671,7 +1785,7 @@ function newDocument(mode, ref = null, refLines = []) {
   showBreakdown(null);
   if (refLines.length && mode === 'credit_note') refLines.forEach(l => addRow({ description: l.description, qty: String(Number(l.qty)), unit_price: String(Number(l.unit_price)), category: l.category, exemption_code: l.exemption_code, exemption_reason: l.exemption_reason }));
   else addRow();
-  renderQR(null); toolbarFor(mode); recalc(); renderBranchLine(draftBranch());
+  renderQR(null); toolbarFor(mode); recalc(); renderBranchLine(draftBranch()); refreshCreditHint();
   if (mode !== 'invoice') setStatus(mode === 'credit_note'
     ? 'إشعار دائن: احذف البنود غير المرتجعة وعدّل الكميات أو الأسعار لتعكس قيمة التخفيض فقط.'
     : 'إشعار مدين: أدخل البنود أو المبالغ الإضافية المستحقة على العميل.', 'warn');
@@ -1711,6 +1825,7 @@ function validateDraft() {
 
 async function issue() {
   const errs = validateDraft(); showErrors(errs); if (errs.length) return;
+  if (!creditPreIssue()) return;
   let label = S.mode === 'invoice' ? ($('inv-type').value === 'standard' ? 'فاتورة ضريبية' : 'فاتورة ضريبية مبسطة') : DOC_AR[S.mode];
   if (multiBranch()) label += ' باسم ' + branchName(draftBranch());
   if (!confirm(`سيتم إصدار ${label} وحفظها نهائياً، ولن يمكن تعديلها أو حذفها بعد ذلك.\n\nمتابعة؟`)) return;
@@ -1795,6 +1910,7 @@ async function openDoc(id) {
   applyLayout();
   await renderZatcaPanel(d);
   renderSharePanel(d);
+  renderPayPanel(d);
   if (d.doc_type !== 'invoice') {
     const ref = await query('invoices', 'select=id,number&id=eq.' + d.ref_invoice_id);
     $('ref-number').textContent = ref[0] ? ref[0].number : '';
@@ -1825,7 +1941,7 @@ async function loadDocs() {
   const fb = $('f-branch').value, fbMain = fb && mainBranch() && fb === mainBranch().id;
   if (fb && !fbMain) {
     const ids = await query('invoice_branch', 'select=invoice_id&branch_id=eq.' + encodeURIComponent(fb));
-    if (!ids.length) { tbody.replaceChildren(el('tr', {}, el('td', { colspan: '7', class: 'empty', text: 'لا توجد مستندات لهذا الفرع' }))); $('docs-hint').textContent = ''; return; }
+    if (!ids.length) { tbody.replaceChildren(el('tr', {}, el('td', { colspan: '8', class: 'empty', text: 'لا توجد مستندات لهذا الفرع' }))); $('docs-hint').textContent = ''; return; }
     p.push('id=in.(' + ids.slice(-1000).map(x => x.invoice_id).join(',') + ')');
   }
   if ($('f-from').value) p.push('issued_at=gte.' + encodeURIComponent($('f-from').value + 'T00:00:00+03:00'));
@@ -1843,8 +1959,9 @@ async function loadDocs() {
     const mainId = mainBranch() && mainBranch().id;
     if (fbMain) rows = rows.filter(r => (bmap[r.id] || mainId) === mainId);
     const bcode = (r) => { const b = S.branches.find(x => x.id === (bmap[r.id] || mainId)); return b ? b.code : ''; };
+    const pmap = await loadDocsPayStatus(rows);
     tbody.replaceChildren();
-    if (!rows.length) { tbody.appendChild(el('tr', {}, el('td', { colspan: '7', class: 'empty', text: 'لا توجد مستندات' }))); }
+    if (!rows.length) { tbody.appendChild(el('tr', {}, el('td', { colspan: '8', class: 'empty', text: 'لا توجد مستندات' }))); }
     rows.forEach(r => tbody.appendChild(el('tr', { class: 'click', onclick: () => openDoc(r.id).catch(e => showErrors([e.message])) }, [
       el('td', { class: 'ltr', text: r.number }),
       el('td', {}, el('span', { class: 'tag ' + r.doc_type, text: DOC_AR[r.doc_type] + (r.kind === 'simplified' ? ' مبسطة' : '') })),
@@ -1852,6 +1969,7 @@ async function loadDocs() {
       el('td', { text: r.buyer_name || '—' }),
       ...(multiBranch() ? [el('td', { class: 'ltr', text: bcode(r) })] : []),
       el('td', { class: 'num', text: fmtN(r.total) }),
+      el('td', {}, r.doc_type === 'credit_note' ? '—' : payBadge(pmap[r.id])),
       el('td', {}, zmap[r.id] ? el('span', { class: 'zbadge zb-' + zmap[r.id], text: ZST_AR[zmap[r.id]] }) : (zatcaApplies(r) ? el('span', { class: 'zbadge zb-none', text: ZST_AR.none }) : '—'))
     ])));
     $('docs-hint').textContent = rows.length === 200 ? 'يُعرض أحدث 200 مستند؛ استخدم البحث أو التاريخ لتضييق النتائج.' : `${rows.length} مستند`;
@@ -1889,7 +2007,7 @@ function fillCompanyForm() {
 }
 async function loadSettings() {
   buildCompanyForm();
-  try { await loadCompany(); fillCompanyForm(); loadCompanyHistory(); await loadBranches(); renderBranches(); await loadInvoiceSettings(); fillLayoutSettings(); await loadZatcaStatus(); renderZatcaSettings(); loadBackups(); } catch (e) { showErrors([e.message]); }
+  try { await loadCompany(); fillCompanyForm(); loadCompanyHistory(); await loadBranches(); renderBranches(); await loadInvoiceSettings(); fillLayoutSettings(); loadFinanceSettings(); await loadZatcaStatus(); renderZatcaSettings(); loadBackups(); } catch (e) { showErrors([e.message]); }
 }
 async function saveCompany() {
   const changes = {};
@@ -2121,16 +2239,22 @@ function pickCustomer() {
   Object.entries(map).forEach(([id, v]) => { $(id).value = v || ''; $(id).classList.remove('invalid'); });
   if (S.mode === 'invoice') { $('inv-type').value = c.default_kind; setTitle('invoice', c.default_kind); }
   S.customerId = c.id; $('save-cust').checked = false; $('cust-pick').value = '';
-  $('buyer-code').value = c.code || ''; $('buyer-cr').value = c.cr_number || ''; syncHero();
+  $('buyer-code').value = c.code || ''; $('buyer-cr').value = c.cr_number || ''; syncHero(); refreshCreditHint();
   setStatus(`تم اختيار العميل ${c.name} (${c.code}).`, 'ok');
 }
 const matches = (q, ...vals) => !q || vals.some(v => String(v || '').toLowerCase().includes(q));
+async function loadCustomerBalances() {
+  try { const r = await rpc('report_aging', { p_as_of: todayStr(), p_branch: null });
+    S.arBal = Object.fromEntries(r.rows.filter(x => x.customer_id).map(x => [x.customer_id, { total: x.total, late: num(x.total) - num(x.current) > 0 }]));
+    if (S.view === 'customers') renderCustomers(); } catch (e) { /* اختياري */ }
+}
 function renderCustomers() {
   const q = $('c-search').value.trim().toLowerCase(), all = $('c-inactive').checked;
   const rows = S.customers.filter(c => (all || c.active) && matches(q, c.name, c.vat_number, c.code, c.phone, c.city));
   $('c-body').replaceChildren(...rows.slice(0, 500).map(c => el('tr', { class: c.active ? '' : 'inactive' }, [
     el('td', { class: 'ltr', text: c.code }), el('td', { text: c.name }), el('td', { class: 'ltr', text: c.vat_number || '—' }),
     el('td', { text: c.city || '—' }), el('td', { text: c.default_kind === 'standard' ? 'ضريبية' : 'مبسطة' }), el('td', { class: 'ltr', text: c.phone || '' }),
+    el('td', { class: 'num' }, S.arBal && S.arBal[c.id] ? el('a', { class: 'click-link' + (S.arBal[c.id].late ? ' late4' : ''), text: fmtN(S.arBal[c.id].total), onclick: () => openAccount(c.id) }) : '—'),
     el('td', {}, can('admin', 'issuer') ? [el('button', { class: 'btn sm light', type: 'button', text: 'تعديل', onclick: () => openCustomerForm(c) }), ' ',
       el('button', { class: 'btn sm ' + (c.active ? 'gray' : 'green'), type: 'button', text: c.active ? 'إيقاف' : 'تفعيل', onclick: async (e) => {
         busy(e.target, true); try { await rpc('set_customer_active', { p_id: c.id, p_active: !c.active }); await loadMasters(); renderCustomers(); } catch (err) { showErrors([err.message]); } finally { busy(e.target, false); } } })] : [])
@@ -2163,9 +2287,16 @@ const toLatinIf = (k, v) => ['vat_number', 'cr_number', 'building_no', 'postal_c
 function openCustomerForm(c) {
   const kind = el('select', {}, [el('option', { value: 'simplified', text: 'فاتورة مبسطة (B2C)' }), el('option', { value: 'standard', text: 'فاتورة ضريبية (B2B)' })]);
   kind.value = c ? c.default_kind : 'simplified';
+  const admin = can('admin');
+  const limit = el('input', { id: 'c-credit-limit', class: 'ltr', inputmode: 'decimal', placeholder: 'بدون حد', disabled: !admin }); limit.value = c && c.credit_limit != null ? c.credit_limit : '';
+  const terms = el('input', { id: 'c-terms', class: 'ltr', inputmode: 'numeric', maxlength: '3', disabled: !admin }); terms.value = c ? c.payment_terms_days : '';
   const ins = masterForm($('c-form'), C_FIELDS, c, [el('div', { class: 'field' }, [el('label', { text: 'نوع الفاتورة الافتراضي' }), kind,
-    el('div', { class: 'hint', text: 'الضريبية تتطلب: الرقم الضريبي والعنوان الوطني كاملاً.' })])], async (p) => {
-    p.default_kind = kind.value; await rpc('save_customer', { p }); await loadMasters(); renderCustomers();
+    el('div', { class: 'hint', text: 'الضريبية تتطلب: الرقم الضريبي والعنوان الوطني كاملاً.' })]),
+    el('div', { class: 'field' }, [el('label', { for: 'c-credit-limit', text: 'الحد الائتماني (ريال)' }), limit, el('div', { class: 'hint', text: admin ? 'اتركه فارغاً لعدم التقييد. يمنع المُصدِر من تجاوزه في الفواتير الآجلة.' : 'يحدده المدير.' })]),
+    el('div', { class: 'field' }, [el('label', { for: 'c-terms', text: 'مدة السداد (يوم)' }), terms, el('div', { class: 'hint', text: admin ? 'يُحسب منها تاريخ استحقاق الفواتير الآجلة. فارغ = المدة الافتراضية.' : 'يحددها المدير.' })])], async (p) => {
+    p.default_kind = kind.value;
+    if (admin) { p.credit_limit = toLatin(limit.value).replace(/,/g, ''); if (terms.value.trim()) p.payment_terms_days = toLatin(terms.value); }
+    await rpc('save_customer', { p }); await loadMasters(); renderCustomers(); loadCustomerBalances();
     setStatus(c ? 'تم حفظ بيانات العميل.' : 'تمت إضافة العميل.', 'ok');
   });
   return ins;
@@ -2282,8 +2413,8 @@ async function runReport() {
     $('btn-r-csv').disabled = !rows.length;
   } catch (e) { out.replaceChildren(); showErrors([e.message]); }
 }
-function exportCsv() {
-  const r = S.report; if (!r) return;
+function exportCsv(rep) {
+  const r = rep && rep.head ? rep : S.report; if (!r) return;
   const cell = (c) => {
     if (typeof c === 'number') return c.toFixed(2);
     let s = String(c ?? '');
@@ -2326,7 +2457,465 @@ async function loadBackups() {
 /* =====================================================================
    التشغيل
    ===================================================================== */
+/* =====================================================================
+   التحصيل والذمم المدينة
+   الذمة = فاتورة/إشعار مدين آجل · المتبقي = الإجمالي − الإشعارات الدائنة − الدفعات المطبّقة
+   ===================================================================== */
+const PAY_METHODS = ['نقدي', 'تحويل بنكي', 'شبكة / مدى', 'شيك'];
+const PAY_EN_ALL = { 'نقدي': 'Cash', 'تحويل بنكي': 'Bank transfer', 'شبكة / مدى': 'Card / mada', 'شيك': 'Cheque', 'آجل': 'Credit' };
+const PST = { cash: 'مسددة عند الإصدار', paid: 'مسددة', partial: 'مسددة جزئياً', unpaid: 'غير مسددة', overdue: 'متأخرة' };
+const KIND_AR = { invoice: 'فاتورة', debit_note: 'إشعار مدين', credit_note: 'إشعار دائن', payment: 'سند قبض' };
+const AR = { tab: 'aging', aging: null, acc: null, csv: null, stmt: null, credit: null, payCtx: null };
+const todayStr = () => riyadh(new Date(), false);
+const addDays = (s, n) => { const d = new Date(s + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+const num = (v) => Number(v || 0);
+
+function payBadge(st) {
+  if (!st) return el('span', { text: '—' });
+  const txt = st.status === 'overdue' ? `متأخرة ${st.days_overdue} يوماً` : PST[st.status];
+  return el('span', { class: 'pbadge pb-' + st.status, text: txt });
+}
+
+/* ---------------------------------------------------------------- الشاشة */
+function showArTab(tab) {
+  AR.tab = tab;
+  document.querySelectorAll('#ar-tabs button').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  $('ar-aging').hidden = tab !== 'aging'; $('ar-payments').hidden = tab !== 'payments';
+  if (tab === 'aging') loadAging(); else loadPaymentsList();
+}
+async function loadAr() {
+  if (!$('ar-asof').value) $('ar-asof').value = todayStr();
+  if (!$('ar-p-from').value) { $('ar-p-from').value = todayStr().slice(0, 8) + '01'; $('ar-p-to').value = todayStr(); }
+  document.querySelectorAll('#view-ar .can-edit').forEach(b => { b.hidden = !can('admin', 'issuer'); });
+  await loadArSummary();
+  showArTab(AR.tab);
+}
+async function loadArSummary() {
+  const box = $('ar-kpis');
+  try {
+    const s = await rpc('ar_summary', { p_branch: $('ar-branch').value || null });
+    const card = (label, en, val, cls, sub) => el('div', { class: 'kpi ' + (cls || '') }, [
+      el('div', { class: 'kpi-l' }, [label, el('span', { class: 'en', text: en })]), el('div', { class: 'kpi-v', text: fmtN(val) }), el('div', { class: 'kpi-s', text: sub || '' })]);
+    box.replaceChildren(
+      card('إجمالي المستحقات', 'Receivables', s.outstanding, '', `${s.customers} عميل`),
+      card('المتأخر', 'Overdue', s.overdue, num(s.overdue) > 0 ? 'bad' : 'good', num(s.overdue) > 0 ? `${s.overdue_customers} عميل متأخر` : 'لا توجد متأخرات'),
+      card('يستحق خلال 7 أيام', 'Due in 7 days', s.due_7d, num(s.due_7d) > 0 ? 'warn' : ''),
+      card('تحصيلات هذا الشهر', 'Collected this month', s.collected_month, 'good', num(s.unapplied) > 0 ? `دائن غير مطبّق ${fmtN(s.unapplied)}` : ''));
+  } catch (e) { box.replaceChildren(); showErrors([e.message]); }
+}
+
+/* ---------------------------------------------------------------- أعمار الديون */
+async function loadAging() {
+  const out = $('ar-aging-out'); out.replaceChildren(el('p', { class: 'empty', text: 'جارٍ التحميل...' }));
+  try {
+    AR.aging = await rpc('report_aging', { p_as_of: $('ar-asof').value || todayStr(), p_branch: $('ar-branch').value || null });
+    renderAging();
+  } catch (e) { out.replaceChildren(); showErrors([e.message]); }
+}
+function renderAging() {
+  const r = AR.aging, out = $('ar-aging-out'); if (!r) return;
+  const q = $('ar-search').value.trim().toLowerCase();
+  const rows = r.rows.filter(x => matches(q, x.name, x.code));
+  const keys = ['current', 'd1_30', 'd31_60', 'd61_90', 'd90', 'total'];
+  const tot = Object.fromEntries(keys.concat('unapplied').map(k => [k, r2(rows.reduce((a, x) => a + num(x[k]), 0))]));
+  const head = ['العميل', 'الرمز', 'غير مستحق', '1–30 يوماً', '31–60 يوماً', '61–90 يوماً', 'أكثر من 90', 'الإجمالي', 'دائن غير مطبّق', 'الحد الائتماني'];
+  const cell = (v, cls) => el('td', { class: 'num' + (cls ? ' ' + cls : ''), text: num(v) ? fmtN(v) : '—' });
+  const tb = el('table', { class: 'grid aging' }, [
+    el('thead', {}, el('tr', {}, head.map(h => el('th', { text: h })))),
+    el('tbody', {}, rows.length ? rows.map(x => {
+      const over = x.credit_limit != null && num(x.total) - num(x.unapplied) > num(x.credit_limit);
+      return el('tr', { class: 'click' + (num(x.d90) > 0 ? ' risk' : ''), title: 'فتح حساب العميل', onclick: () => x.customer_id && openAccount(x.customer_id) }, [
+        el('td', { class: 'cust', text: x.name }), el('td', { class: 'ltr', text: x.code || '—' }),
+        cell(x.current), cell(x.d1_30, 'late1'), cell(x.d31_60, 'late2'), cell(x.d61_90, 'late3'), cell(x.d90, 'late4'),
+        el('td', { class: 'num strong', text: fmtN(x.total) }), cell(x.unapplied),
+        el('td', { class: 'num' + (over ? ' late4' : ''), text: x.credit_limit != null ? fmtN(x.credit_limit) + (over ? ' ⚠' : '') : '—' })]);
+    }) : [el('tr', {}, el('td', { colspan: String(head.length), class: 'empty', text: 'لا توجد ذمم مفتوحة.' }))]),
+    rows.length ? el('tfoot', {}, el('tr', {}, [el('td', { text: 'الإجمالي' }), el('td', { text: `${rows.length} عميل` }),
+      ...keys.map(k => el('td', { class: 'num', text: fmtN(tot[k]) })), el('td', { class: 'num', text: fmtN(tot.unapplied) }), el('td', { text: '' })])) : null]);
+  AR.csv = { type: 'aging', from: r.as_of, to: r.as_of, head, rows: rows.map(x => [x.name, x.code || '', ...keys.map(k => num(x[k])), num(x.unapplied), x.credit_limit != null ? num(x.credit_limit) : '']),
+    foot: rows.length ? ['الإجمالي', `${rows.length} عميل`, ...keys.map(k => tot[k]), tot.unapplied, ''] : null };
+  $('btn-ar-csv').disabled = !rows.length;
+  out.replaceChildren(tb, el('p', { class: 'rep-note', text: `كما في ${r.as_of}. الأعمار من تاريخ الاستحقاق، والمبالغ هي المتبقي بعد الإشعارات الدائنة والدفعات. اضغط على عميل لفتح حسابه.` }));
+}
+
+/* ---------------------------------------------------------------- قائمة السندات */
+async function loadPaymentsList() {
+  const out = $('ar-payments-out'); out.replaceChildren(el('p', { class: 'empty', text: 'جارٍ التحميل...' }));
+  try {
+    const rows = await rpc('list_payments', { p_from: $('ar-p-from').value, p_to: $('ar-p-to').value, p_customer: null });
+    const live = rows.filter(p => !p.voided_at);
+    out.replaceChildren(paymentsTable(rows, true),
+      el('p', { class: 'rep-note', text: `${live.length} سند بإجمالي ${fmtN(live.reduce((a, p) => a + num(p.amount), 0))} ريال${rows.length > live.length ? ` · ${rows.length - live.length} ملغى` : ''}.` }));
+  } catch (e) { out.replaceChildren(); showErrors([e.message]); }
+}
+function paymentsTable(rows, withCustomer) {
+  const head = ['السند', 'التاريخ', ...(withCustomer ? ['العميل'] : []), 'الطريقة', 'المبلغ', 'مطبّق على', 'غير مطبّق', ''];
+  return el('table', { class: 'grid' }, [el('thead', {}, el('tr', {}, head.map(h => el('th', { text: h })))),
+    el('tbody', {}, rows.length ? rows.map(p => el('tr', { class: p.voided_at ? 'inactive voided' : '' }, [
+      el('td', { class: 'ltr', text: p.number }), el('td', { text: p.received_on }),
+      ...(withCustomer ? [el('td', { class: 'click-link', text: p.customer_name, onclick: () => openAccount(p.customer_id) })] : []),
+      el('td', { text: p.method + (p.reference ? ' — ' + p.reference : '') }),
+      el('td', { class: 'num strong', text: fmtN(p.amount) }),
+      el('td', { text: p.voided_at ? `ملغى: ${p.void_reason || ''}` : ((p.allocations || []).map(a => a.number).join('، ') || '—') }),
+      el('td', { class: 'num', text: !p.voided_at && num(p.unapplied) ? fmtN(p.unapplied) : '—' }),
+      el('td', { class: 'actions' }, [
+        el('button', { class: 'btn sm light', type: 'button', text: '🖨️ السند', onclick: () => printReceipt(p.id).catch(e => showErrors([e.message])) }),
+        !p.voided_at && num(p.unapplied) > 0 && can('admin', 'issuer') ? el('button', { class: 'btn sm', type: 'button', text: 'تطبيق الرصيد', onclick: () => applyUnapplied(p) }) : null,
+        !p.voided_at && can('admin') ? el('button', { class: 'btn sm red', type: 'button', text: 'إلغاء', onclick: () => voidPayment(p) }) : null])
+    ])) : [el('tr', {}, el('td', { colspan: String(head.length), class: 'empty', text: 'لا توجد سندات في هذه الفترة.' }))])]);
+}
+async function applyUnapplied(p) {
+  if (!confirm(`تطبيق الرصيد غير المطبّق (${fmtN(p.unapplied)}) من السند ${p.number} على أقدم المستندات المفتوحة للعميل؟`)) return;
+  try { const r = await rpc('allocate_payment', { p_payment: p.id, p_allocations: null, p_auto: true });
+    setStatus(`طُبّق ${fmtN(r.allocated)} ريال${num(r.unapplied) ? ` وبقي ${fmtN(r.unapplied)} غير مطبّق` : ''}.`, 'ok'); await refreshArViews();
+  } catch (e) { showErrors([e.message]); }
+}
+async function voidPayment(p) {
+  const reason = prompt(`إلغاء سند القبض ${p.number} بمبلغ ${fmtN(p.amount)} ريال.\nيبقى السند في السجل مع سبب الإلغاء، وتعود المبالغ المطبّقة مستحقة.\n\nاكتب سبب الإلغاء:`);
+  if (reason === null) return;
+  try { await rpc('void_payment', { p_id: p.id, p_reason: reason }); setStatus(`تم إلغاء السند ${p.number}.`, 'ok'); await refreshArViews(); }
+  catch (e) { showErrors([e.message]); }
+}
+async function refreshArViews() {
+  await loadArSummary();
+  if (AR.tab === 'aging') await loadAging(); else await loadPaymentsList();
+  if (AR.acc && !$('ar-account').hidden) await openAccount(AR.acc.customer.id, true);
+}
+
+/* ---------------------------------------------------------------- حساب العميل */
+async function openAccount(cid, keepScroll) {
+  if (S.view !== 'ar') showView('ar');
+  const box = $('ar-account'); box.hidden = false; $('ar-payform').hidden = true;
+  if (!keepScroll) box.replaceChildren(el('p', { class: 'empty', text: 'جارٍ التحميل...' }));
+  try {
+    AR.acc = await rpc('customer_account', { p_customer: cid });
+    renderAccount();
+    if (!keepScroll) box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch (e) { box.replaceChildren(); showErrors([e.message]); }
+}
+function renderAccount() {
+  const a = AR.acc, c = a.customer, cr = a.credit, box = $('ar-account');
+  const over = cr.credit_limit != null && num(cr.balance) > num(cr.credit_limit);
+  const kc = (l, v, cls, sub) => el('div', { class: 'kpi sm ' + (cls || '') }, [el('div', { class: 'kpi-l', text: l }), el('div', { class: 'kpi-v', text: v }), sub ? el('div', { class: 'kpi-s', text: sub }) : null]);
+  const head = el('div', { class: 'acc-head' }, [
+    el('div', {}, [el('h3', { text: `حساب العميل: ${c.name}` }),
+      el('div', { class: 'hint', text: [c.code, c.vat_number && 'الرقم الضريبي ' + c.vat_number, c.phone, `مدة السداد ${c.terms_days} يوماً`].filter(Boolean).join(' · ') })]),
+    el('div', { class: 'toolbar', style: 'margin:0' }, [
+      can('admin', 'issuer') ? el('button', { class: 'btn green sm', type: 'button', id: 'btn-acc-pay', text: '＋ سند قبض', onclick: () => openPayForm(c.id) }) : null,
+      el('button', { class: 'btn light sm', type: 'button', text: '✕ إغلاق', onclick: () => { box.hidden = true; AR.acc = null; } })])]);
+  const kpis = el('div', { class: 'kpis' }, [
+    kc('الرصيد المستحق', fmtN(cr.balance), over ? 'bad' : ''),
+    kc('منه متأخر', fmtN(cr.overdue), num(cr.overdue) > 0 ? 'bad' : 'good', num(cr.overdue) > 0 ? `أقدمه ${cr.max_days_overdue} يوماً` : ''),
+    kc('الحد الائتماني', cr.credit_limit != null ? fmtN(cr.credit_limit) : 'غير محدد'),
+    kc('المتاح', cr.available != null ? fmtN(cr.available) : '—', cr.available != null ? (num(cr.available) < 0 ? 'bad' : 'good') : '', over ? 'تجاوز الحد' : ''),
+    num(cr.unapplied) > 0 ? kc('دائن غير مطبّق', fmtN(cr.unapplied), 'warn', 'يُطبّق من قائمة السندات') : null]);
+  // المستندات المفتوحة
+  const oh = ['المستند', 'الإصدار', 'الاستحقاق', 'الحالة', 'الإجمالي', 'إشعارات دائنة', 'مدفوع', 'المتبقي'];
+  const openT = el('table', { class: 'grid' }, [el('thead', {}, el('tr', {}, oh.map(h => el('th', { text: h })))),
+    el('tbody', {}, a.open.length ? a.open.map(o => el('tr', {}, [
+      el('td', { class: 'ltr click-link', text: o.number, onclick: () => openDoc(o.invoice_id).catch(e => showErrors([e.message])) }),
+      el('td', { text: o.issued_on }),
+      el('td', {}, [o.due_date, can('admin') ? el('button', { class: 'link', type: 'button', text: 'تعديل', style: 'margin-inline-start:8px', title: 'تعديل تاريخ الاستحقاق', onclick: (e) => editDue(o, e.target.closest('td')) }) : null]),
+      el('td', {}, payBadge({ status: num(o.days_overdue) > 0 ? 'overdue' : (num(o.paid) + num(o.credited) > 0 ? 'partial' : 'unpaid'), days_overdue: o.days_overdue })),
+      el('td', { class: 'num', text: fmtN(o.total) }), el('td', { class: 'num', text: num(o.credited) ? fmtN(o.credited) : '—' }),
+      el('td', { class: 'num', text: num(o.paid) ? fmtN(o.paid) : '—' }), el('td', { class: 'num strong', text: fmtN(o.outstanding) })
+    ])) : [el('tr', {}, el('td', { colspan: String(oh.length), class: 'empty', text: 'لا توجد مستندات مفتوحة — الحساب مسدد.' }))])]);
+  // كشف الحساب
+  const from = el('input', { type: 'date', id: 'st-from', value: AR.stFrom || addDays(todayStr(), -90) });
+  const to = el('input', { type: 'date', id: 'st-to', value: AR.stTo || todayStr() });
+  const stOut = el('div', { id: 'st-out' });
+  const stBar = el('div', { class: 'toolbar' }, [el('label', { for: 'st-from', text: 'من' }), from, el('label', { for: 'st-to', text: 'إلى' }), to,
+    el('button', { class: 'btn sm', type: 'button', id: 'btn-st-run', text: 'عرض الكشف', onclick: () => loadStatement() }),
+    el('button', { class: 'btn sm light', type: 'button', id: 'btn-st-print', text: '🖨️ طباعة', onclick: () => printStatement() }),
+    el('button', { class: 'btn sm light', type: 'button', id: 'btn-st-csv', text: '⬇ Excel (CSV)', onclick: () => AR.stmtCsv && exportCsv(AR.stmtCsv) })]);
+  box.replaceChildren(head, kpis,
+    el('h4', { class: 'sec', text: 'المستندات المفتوحة' }), openT,
+    el('h4', { class: 'sec', text: 'سندات القبض' }), paymentsTable(a.payments, false),
+    el('h4', { class: 'sec', text: 'كشف الحساب' }), stBar, stOut);
+  loadStatement();
+}
+function editDue(o, td) {
+  const inp = el('input', { type: 'date', value: o.due_date, min: o.issued_on });
+  const save = el('button', { class: 'btn sm', type: 'button', text: 'حفظ', onclick: async () => {
+    try { await rpc('set_due_date', { p_invoice: o.invoice_id, p_due: inp.value }); setStatus(`تم تعديل استحقاق ${o.number} إلى ${inp.value}.`, 'ok'); await refreshArViews(); }
+    catch (e) { showErrors([e.message]); } } });
+  td.replaceChildren(inp, ' ', save);
+}
+async function loadStatement() {
+  const c = AR.acc && AR.acc.customer; if (!c) return;
+  AR.stFrom = $('st-from').value; AR.stTo = $('st-to').value;
+  const out = $('st-out'); out.replaceChildren(el('p', { class: 'empty', text: 'جارٍ إعداد الكشف...' }));
+  try {
+    const s = AR.stmt = await rpc('customer_statement', { p_customer: c.id, p_from: AR.stFrom, p_to: AR.stTo });
+    out.replaceChildren(statementTable(s));
+    AR.stmtCsv = { type: 'statement-' + c.code, from: s.from, to: s.to, head: ['التاريخ', 'البيان', 'المستند', 'مدين', 'دائن', 'الرصيد'],
+      rows: [[s.from, 'رصيد افتتاحي', '', '', '', num(s.opening)], ...s.lines.map(l => [l.date, stmtLabel(l), l.number, num(l.debit), num(l.credit), num(l.balance)])],
+      foot: ['', 'الإجمالي والرصيد الختامي', '', num(s.debits), num(s.credits), num(s.closing)] };
+  } catch (e) { out.replaceChildren(); showErrors([e.message]); }
+}
+const stmtLabel = (l) => KIND_AR[l.kind] + (l.kind === 'credit_note' && l.ref ? ` على ${l.ref}` : '') + (l.kind === 'payment' && l.ref ? ` (${l.ref})` : '');
+function statementTable(s) {
+  const head = ['التاريخ', 'البيان', 'المستند', 'مدين', 'دائن', 'الرصيد'];
+  const tr = (cells, cls) => el('tr', { class: cls || '' }, cells);
+  return el('table', { class: 'grid stmt' }, [el('thead', {}, el('tr', {}, head.map(h => el('th', { text: h })))),
+    el('tbody', {}, [
+      tr([el('td', { text: s.from }), el('td', { text: 'رصيد افتتاحي' }), el('td', { text: '' }), el('td', { text: '' }), el('td', { text: '' }), el('td', { class: 'num strong', text: fmtN(s.opening) })], 'opening'),
+      ...s.lines.map(l => tr([el('td', { text: l.date }), el('td', { text: stmtLabel(l) }), el('td', { class: 'ltr', text: l.number }),
+        el('td', { class: 'num', text: num(l.debit) ? fmtN(l.debit) : '' }), el('td', { class: 'num', text: num(l.credit) ? fmtN(l.credit) : '' }),
+        el('td', { class: 'num strong', text: fmtN(l.balance) })])),
+      ...(s.lines.length ? [] : [tr([el('td', { colspan: '6', class: 'empty', text: 'لا توجد حركات في هذه الفترة.' })])])]),
+    el('tfoot', {}, el('tr', {}, [el('td', { text: s.to }), el('td', { text: 'الإجمالي والرصيد الختامي' }), el('td', { text: '' }),
+      el('td', { class: 'num', text: fmtN(s.debits) }), el('td', { class: 'num', text: fmtN(s.credits) }), el('td', { class: 'num', text: fmtN(s.closing) })]))]);
+}
+
+/* ---------------------------------------------------------------- سند القبض */
+async function openPayForm(cid, preselectId) {
+  if (S.view !== 'ar') showView('ar');
+  const box = $('ar-payform'); box.hidden = false;
+  AR.payCtx = { cid: cid || null, open: [], preselect: preselectId || null };
+  const cust = el('input', { id: 'pf-cust', list: 'cust-list', placeholder: 'ابحث بالاسم أو الرقم الضريبي أو الرمز', autocomplete: 'off' });
+  const fixed = cid ? S.customers.find(x => x.id === cid) : null;
+  if (fixed) { cust.value = custOption(fixed); cust.disabled = true; }
+  const method = el('select', { id: 'pf-method' }, PAY_METHODS.map(m => el('option', { value: m, text: `${m} — ${PAY_EN_ALL[m]}` })));
+  const field = (label, input, hint, full) => el('div', { class: 'field' + (full ? ' full' : '') }, [el('label', { for: input.id, text: label }), input, hint ? el('div', { class: 'hint', text: hint }) : null]);
+  const amount = el('input', { id: 'pf-amount', inputmode: 'decimal', placeholder: '0.00', class: 'ltr', autocomplete: 'off' });
+  const date = el('input', { id: 'pf-date', type: 'date', value: todayStr(), max: todayStr() });
+  const ref = el('input', { id: 'pf-ref', maxlength: '80', class: 'ltr' });
+  const notes = el('input', { id: 'pf-notes', maxlength: '300' });
+  const save = el('button', { class: 'btn green', type: 'button', id: 'btn-pf-save', text: '✔ حفظ سند القبض', onclick: savePayment });
+  box.replaceChildren(
+    el('h3', { text: 'سند قبض جديد' }),
+    el('div', { class: 'form-grid' }, [field('العميل *', cust, null, true), field('المبلغ المقبوض *', amount, 'بالريال، منزلتان عشريتان كحد أقصى'),
+      field('تاريخ القبض *', date), field('طريقة القبض *', method), field('رقم الشيك / مرجع التحويل', ref, 'إلزامي للشيك والتحويل البنكي'), field('ملاحظات', notes, null, true)]),
+    el('div', { class: 'toolbar', style: 'margin:14px 0 6px' }, [el('strong', { text: 'توزيع المبلغ على المستندات المفتوحة' }), el('span', { class: 'spacer' }),
+      el('button', { class: 'btn sm light', type: 'button', id: 'btn-pf-auto', text: '⚡ توزيع تلقائي (الأقدم أولاً)', onclick: autoDistribute }),
+      el('button', { class: 'btn sm light', type: 'button', text: 'مسح التوزيع', onclick: () => { document.querySelectorAll('#pf-open input.alloc').forEach(i => { i.value = ''; }); updatePaySummary(); } })]),
+    el('div', { id: 'pf-open' }, el('p', { class: 'empty', text: cid ? 'جارٍ التحميل...' : 'اختر العميل لعرض مستنداته المفتوحة.' })),
+    el('div', { id: 'pf-sum', class: 'pf-sum' }),
+    el('div', { class: 'toolbar', style: 'margin-top:12px' }, [el('span', { class: 'spacer' }),
+      el('button', { class: 'btn light', type: 'button', text: 'إلغاء', onclick: () => { box.hidden = true; } }), save]));
+  cust.addEventListener('change', () => { const c = S.customers.find(x => custOption(x) === cust.value); if (c) { AR.payCtx.cid = c.id; loadPayOpen(); } });
+  amount.addEventListener('input', updatePaySummary);
+  method.addEventListener('change', () => { ref.placeholder = ['شيك', 'تحويل بنكي'].includes(method.value) ? 'مطلوب' : ''; });
+  box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (cid) await loadPayOpen(); else cust.focus();
+}
+async function loadPayOpen() {
+  const ctx = AR.payCtx, box = $('pf-open');
+  try {
+    const a = await rpc('customer_account', { p_customer: ctx.cid });
+    ctx.open = a.open; ctx.credit = a.credit;
+    if (!a.open.length) { box.replaceChildren(el('p', { class: 'empty', text: 'لا توجد مستندات مفتوحة؛ سيُسجّل المبلغ رصيداً دائناً للعميل يُطبّق لاحقاً.' })); updatePaySummary(); return; }
+    const head = ['المستند', 'الاستحقاق', 'المتبقي', 'المبلغ المطبّق'];
+    box.replaceChildren(el('table', { class: 'grid' }, [el('thead', {}, el('tr', {}, head.map(h => el('th', { text: h })))),
+      el('tbody', {}, a.open.map(o => el('tr', { class: num(o.days_overdue) > 0 ? 'risk' : '' }, [
+        el('td', { class: 'ltr', text: o.number }), el('td', { text: o.due_date + (num(o.days_overdue) > 0 ? ` (متأخر ${o.days_overdue} يوماً)` : '') }),
+        el('td', { class: 'num', text: fmtN(o.outstanding) }),
+        el('td', {}, [el('input', { class: 'alloc ltr', inputmode: 'decimal', 'data-id': o.invoice_id, 'data-max': o.outstanding, placeholder: '0.00', oninput: updatePaySummary }),
+          el('button', { class: 'link', type: 'button', text: ' كامل', onclick: (e) => { e.target.previousSibling.value = Number(o.outstanding).toFixed(2); if (!$('pf-amount').value) $('pf-amount').value = Number(o.outstanding).toFixed(2); updatePaySummary(); } })])])))]));
+    if (ctx.preselect) {
+      const o = a.open.find(x => x.invoice_id === ctx.preselect);
+      if (o) { $('pf-amount').value = Number(o.outstanding).toFixed(2); box.querySelector(`input[data-id="${o.invoice_id}"]`).value = Number(o.outstanding).toFixed(2); }
+    }
+    updatePaySummary();
+  } catch (e) { box.replaceChildren(); showErrors([e.message]); }
+}
+const halalas = (v) => { const p = parseScaled(v || '0', 2); return p === null ? null : Number(p); };
+function autoDistribute() {
+  let left = halalas($('pf-amount').value);
+  if (!left) return showErrors(['أدخل المبلغ المقبوض أولاً']);
+  document.querySelectorAll('#pf-open input.alloc').forEach(i => {   // المستندات مرتبة بالأقدم استحقاقاً
+    const max = Math.round(Number(i.dataset.max) * 100), take = Math.min(left, max);
+    i.value = take ? (take / 100).toFixed(2) : ''; left -= take;
+  });
+  updatePaySummary();
+}
+function updatePaySummary() {
+  const amt = halalas($('pf-amount').value), box = $('pf-sum'); if (!box) return;
+  let alloc = 0, bad = [];
+  document.querySelectorAll('#pf-open input.alloc').forEach(i => {
+    i.classList.remove('invalid'); if (!i.value.trim()) return;
+    const h = halalas(i.value); if (h === null || h <= 0 || h > Math.round(Number(i.dataset.max) * 100)) { i.classList.add('invalid'); bad.push(i); return; }
+    alloc += h;
+  });
+  const un = (amt || 0) - alloc;
+  box.className = 'pf-sum' + (un < 0 || bad.length ? ' bad' : '');
+  box.replaceChildren(
+    el('span', {}, ['المبلغ: ', el('b', { text: fmtN((amt || 0) / 100) })]),
+    el('span', {}, ['الموزّع: ', el('b', { text: fmtN(alloc / 100) })]),
+    el('span', {}, [un < 0 ? 'التوزيع يزيد عن المبلغ: ' : 'غير مطبّق (رصيد دائن): ', el('b', { text: fmtN(Math.abs(un) / 100) })]),
+    amt ? el('span', { class: 'words', text: Tafqeet.words(amt / 100).ar }) : '');
+}
+async function savePayment() {
+  const ctx = AR.payCtx, errs = [];
+  if (!ctx.cid) errs.push('اختر العميل');
+  const amt = halalas($('pf-amount').value);
+  if (!amt || amt <= 0) errs.push('أدخل مبلغاً صحيحاً أكبر من صفر');
+  const method = $('pf-method').value, ref = $('pf-ref').value.trim();
+  if (['شيك', 'تحويل بنكي'].includes(method) && !ref) errs.push('اكتب رقم الشيك أو مرجع التحويل');
+  const allocations = [];
+  let alloc = 0;
+  document.querySelectorAll('#pf-open input.alloc').forEach(i => { if (!i.value.trim()) return; const h = halalas(i.value);
+    if (h === null || h <= 0 || h > Math.round(Number(i.dataset.max) * 100)) errs.push('مبلغ مطبّق غير صالح أو أكبر من المتبقي'); else { alloc += h; allocations.push({ invoice_id: i.dataset.id, amount: (h / 100).toFixed(2) }); } });
+  if (amt && alloc > amt) errs.push('مجموع التوزيع أكبر من المبلغ المقبوض');
+  showErrors([...new Set(errs)]); if (errs.length) return;
+  const c = S.customers.find(x => x.id === ctx.cid);
+  const msg = `سيُسجّل سند قبض بمبلغ ${fmtN(amt / 100)} ريال من ${c ? c.name : 'العميل'}` + (alloc < amt ? `، منه ${fmtN((amt - alloc) / 100)} رصيد دائن غير مطبّق` : '') + '.\nلا يمكن تعديل السند بعد حفظه (يمكن إلغاؤه فقط). متابعة؟';
+  if (!confirm(msg)) return;
+  const btn = $('btn-pf-save'); busy(btn, true);
+  try {
+    const r = await rpc('record_payment', { p: { customer_id: ctx.cid, amount: (amt / 100).toFixed(2), received_on: $('pf-date').value, method, reference: ref, notes: $('pf-notes').value.trim(), allocations } });
+    $('ar-payform').hidden = true;
+    setStatus(`تم حفظ سند القبض ${r.number} بمبلغ ${fmtN(amt / 100)} ريال.`, 'ok');
+    const st = $('status').firstChild;
+    if (st) st.append(' ', el('button', { class: 'btn sm', type: 'button', text: '🖨️ طباعة السند', onclick: () => printReceipt(r.id).catch(e => showErrors([e.message])) }));
+    await openAccount(ctx.cid, true); await loadArSummary(); if (AR.tab === 'aging') loadAging(); else loadPaymentsList();
+  } catch (e) { showErrors([e.message]); } finally { busy(btn, false); }
+}
+
+/* ---------------------------------------------------------------- الطباعة: سند القبض وكشف الحساب */
+function sheetHead(title, en) {
+  const c = S.company, set = invSet(), a = sellerAddr(c);
+  return el('div', { class: 'sh-head' }, [
+    el('div', { class: 'sh-co' }, [el('div', { class: 'sh-name', text: c.name_ar }), el('div', { class: 'sh-sub', text: a.ar }),
+      el('div', { class: 'sh-name en', text: c.name_en || '' }), el('div', { class: 'sh-sub', text: `الرقم الضريبي VAT ${c.vat_number} · السجل التجاري C.R. ${c.cr_number}` + (c.mobile ? ` · ${c.mobile}` : '') })]),
+    set.logo ? el('img', { class: 'sh-logo', src: set.logo, alt: '' }) : null,
+    el('div', { class: 'sh-title' }, [el('h2', { text: title }), el('div', { class: 'en', text: en })])]);
+}
+function printSheet(node) {
+  const s = $('print-sheet'); s.replaceChildren(node);
+  s.style.setProperty('--accent', invSet().accent_color || '#2b6cb0');
+  document.body.classList.add('printing-sheet');
+  setTimeout(() => window.print(), 60);
+}
+async function printReceipt(pid) {
+  const [ps, al] = await Promise.all([query('payments', 'select=*&id=eq.' + encodeURIComponent(pid)), query('payment_allocations', 'select=invoice_id,amount&payment_id=eq.' + encodeURIComponent(pid))]);
+  const p = ps[0]; if (!p) throw new Error('السند غير موجود');
+  const invs = al.length ? await query('invoices', 'select=id,number,doc_type&id=in.(' + al.map(a => a.invoice_id).join(',') + ')') : [];
+  const c = S.customers.find(x => x.id === p.customer_id) || (await query('customers', 'select=*&id=eq.' + p.customer_id))[0] || {};
+  const w = Tafqeet.words(p.amount), allocated = al.reduce((s, a) => s + num(a.amount), 0);
+  const row = (ar, en, v, cls) => el('div', { class: 'sh-row ' + (cls || '') }, [el('div', { class: 'k' }, [ar, el('span', { text: en })]), el('div', { class: 'v', text: v })]);
+  const sheet = el('div', { class: 'sheet receipt' + (p.voided_at ? ' void' : '') }, [
+    p.voided_at ? el('div', { class: 'sh-void', text: 'ملغى — VOID' }) : null,
+    sheetHead('سند قبض', 'Receipt Voucher'),
+    el('div', { class: 'sh-meta' }, [row('رقم السند', 'No.', p.number, 'ltr'), row('التاريخ', 'Date', p.received_on)]),
+    el('div', { class: 'sh-amount' }, [el('div', { class: 'k' }, ['المبلغ', el('span', { text: 'Amount' })]), el('div', { class: 'big', text: fmtN(p.amount) + ' SAR' }),
+      el('div', { class: 'words' }, [el('div', { text: w.ar }), el('div', { class: 'en', text: w.en })])]),
+    row('استلمنا من', 'Received from', `${c.name || ''}${c.code ? ' (' + c.code + ')' : ''}${c.vat_number ? ' — الرقم الضريبي ' + c.vat_number : ''}`),
+    row('طريقة القبض', 'Method', `${p.method} — ${PAY_EN_ALL[p.method] || ''}${p.reference ? ' · المرجع: ' + p.reference : ''}`),
+    row('وذلك عن', 'Being', invs.length ? 'سداد ' + al.map(a => { const i = invs.find(x => x.id === a.invoice_id); return `${i ? i.number : ''} (${fmtN(a.amount)})`; }).join('، ')
+      + (num(p.amount) - allocated > 0.004 ? ` ورصيد دائن ${fmtN(num(p.amount) - allocated)}` : '') : 'دفعة على الحساب (رصيد دائن)'),
+    p.notes ? row('ملاحظات', 'Notes', p.notes) : null,
+    p.voided_at ? row('سبب الإلغاء', 'Void reason', p.void_reason || '', 'bad') : null,
+    el('div', { class: 'sh-sign' }, [el('div', {}, ['المستلم', el('span', { text: 'Received by' })]), el('div', {}, ['المحاسب', el('span', { text: 'Accountant' })]), el('div', {}, ['الختم', el('span', { text: 'Stamp' })])])]);
+  printSheet(sheet);
+}
+function printStatement() {
+  const s = AR.stmt; if (!s) return showErrors(['اعرض الكشف أولاً']);
+  const cr = AR.acc.credit;
+  const sheet = el('div', { class: 'sheet statement' }, [
+    sheetHead('كشف حساب عميل', 'Statement of Account'),
+    el('div', { class: 'sh-meta' }, [
+      el('div', { class: 'sh-row' }, [el('div', { class: 'k' }, ['العميل', el('span', { text: 'Customer' })]), el('div', { class: 'v', text: `${s.customer.name} (${s.customer.code})` })]),
+      el('div', { class: 'sh-row' }, [el('div', { class: 'k' }, ['الفترة', el('span', { text: 'Period' })]), el('div', { class: 'v', text: `${s.from} — ${s.to}` })]),
+      s.customer.vat_number ? el('div', { class: 'sh-row' }, [el('div', { class: 'k' }, ['الرقم الضريبي', el('span', { text: 'VAT No.' })]), el('div', { class: 'v ltr', text: s.customer.vat_number })]) : null,
+      el('div', { class: 'sh-row' }, [el('div', { class: 'k' }, ['مدة السداد', el('span', { text: 'Terms' })]), el('div', { class: 'v', text: `${s.customer.terms_days} يوماً` + (s.customer.credit_limit != null ? ` · الحد الائتماني ${fmtN(s.customer.credit_limit)}` : '') })])]),
+    statementTable(s),
+    el('div', { class: 'sh-amount' }, [el('div', { class: 'k' }, ['الرصيد المستحق في ' + s.to, el('span', { text: 'Balance due' })]), el('div', { class: 'big', text: fmtN(s.closing) + ' SAR' }),
+      el('div', { class: 'words' }, [el('div', { text: Tafqeet.words(Math.abs(num(s.closing))).ar + (num(s.closing) < 0 ? ' (رصيد دائن لصالحكم)' : '') })])]),
+    num(cr.overdue) > 0 ? el('p', { class: 'sh-note bad', text: `منه متأخر السداد: ${fmtN(cr.overdue)} ريال. نرجو المبادرة بالسداد.` }) : null,
+    el('p', { class: 'sh-note', text: 'يُرجى مراجعة الكشف وإبلاغنا بأي ملاحظات خلال 15 يوماً من تاريخه، وإلا اعتُبر صحيحاً.' })]);
+  printSheet(sheet);
+}
+
+/* ---------------------------------------------------------------- داخل الفاتورة: حالة السداد */
+async function renderPayPanel(d) {
+  const box = $('pay-panel'); box.replaceChildren(); box.hidden = true;
+  setDueOnPaper(null);
+  if (!['invoice', 'debit_note'].includes(d.doc_type)) return;
+  let st; try { st = (await rpc('doc_payment_status', { p_ids: [d.id] }))[0]; } catch (e) { return; }
+  if (!st || S.doc !== d) return;
+  S.docPay = st;
+  if (st.status !== 'cash') setDueOnPaper(st.due_date);
+  const cid = st.customer_id;
+  box.append(el('div', { class: 'toolbar', style: 'margin:0' }, [
+    el('strong', { text: 'السداد: ' }), payBadge(st),
+    el('span', { class: 'hint', text: st.status === 'cash' ? ` · ${d.payment_method}`
+      : ` · الاستحقاق ${st.due_date} · مدفوع ${fmtN(st.paid)}${num(st.credited) ? ' · إشعارات دائنة ' + fmtN(st.credited) : ''} · المتبقي ${fmtN(st.outstanding)}` }),
+    el('span', { class: 'spacer' }),
+    st.status !== 'cash' && num(st.outstanding) > 0 && cid && can('admin', 'issuer') ? el('button', { class: 'btn sm green', type: 'button', id: 'btn-doc-pay', text: '＋ تسجيل دفعة', onclick: () => openPayForm(cid, d.id) }) : null,
+    cid && st.status !== 'cash' ? el('button', { class: 'btn sm light', type: 'button', text: 'حساب العميل', onclick: () => openAccount(cid) }) : null]));
+  if (st.payments && st.payments.length) box.append(el('ul', { class: 'pay-list' }, st.payments.map(p => el('li', { text: `${p.number} · ${p.received_on} · ${p.method} · ${fmtN(p.amount)} ريال` }))));
+  if (st.status !== 'cash' && !cid) box.append(el('p', { class: 'hint', text: 'هذا المستند الآجل غير مرتبط بعميل من الملف، لذا لا يمكن تسجيل دفعات عليه من هنا.' }));
+  box.hidden = false;
+}
+function setDueOnPaper(due) {
+  const inv = $('invoice'); if (!inv) return;
+  const row = inv.querySelector('.r-due'), hm = inv.querySelector('.hm-due');
+  if (row) { row.hidden = !due; row.classList.toggle('empty-row', !due); row.querySelector('.value').textContent = due || ''; }
+  if (hm) { hm.hidden = !due; hm.querySelector('b').textContent = due || ''; }
+}
+async function loadDocsPayStatus(rows) {
+  const ids = rows.filter(r => r.doc_type !== 'credit_note').map(r => r.id);
+  if (!ids.length) return {};
+  try { const st = await rpc('doc_payment_status', { p_ids: ids }); return Object.fromEntries(st.map(s => [s.invoice_id, s])); } catch (e) { return {}; }
+}
+
+/* ---------------------------------------------------------------- المحرر: رصيد العميل وحده الائتماني */
+async function refreshCreditHint() {
+  const box = $('credit-hint'); if (!box) return;
+  AR.credit = null; box.hidden = true; box.replaceChildren();
+  if (S.mode !== 'invoice' || !S.customerId) return;
+  try { AR.credit = await rpc('customer_credit', { p_customer: S.customerId }); } catch (e) { return; }
+  const c = AR.credit;
+  const parts = [`الرصيد المستحق ${fmtN(c.balance)}`];
+  if (c.credit_limit != null) parts.push(`الحد ${fmtN(c.credit_limit)}`, `المتاح ${fmtN(c.available)}`);
+  if (num(c.overdue) > 0) parts.push(`متأخر ${fmtN(c.overdue)} (حتى ${c.max_days_overdue} يوماً)`);
+  parts.push(`مدة السداد ${c.terms_days} يوماً`);
+  box.className = 'info-row full-row edit-only no-print credit-hint' + (num(c.overdue) > 0 || (c.available != null && num(c.available) < 0) ? ' warn' : '');
+  box.replaceChildren(el('span', { text: '💳 ' + parts.join(' · ') }));
+  box.hidden = false;
+}
+/* قبل الإصدار: الآجل يتطلب عميلاً، والتحقق من الحد الائتماني */
+function creditPreIssue() {
+  if (S.mode !== 'invoice' || $('inv-payment').value !== 'آجل') return true;
+  if (!S.customerId && !$('save-cust').checked) { showErrors(['الفاتورة الآجلة تتطلب عميلاً من ملف العملاء لمتابعة تحصيلها: اختر عميلاً، أو فعّل «حفظ في ملف العملاء عند الإصدار».']); return false; }
+  const c = AR.credit; if (!S.customerId || !c || c.credit_limit == null || !c.enforce) return true;
+  const total = Number(String($('lbl-total').textContent).replace(/[^0-9.]/g, '')) || 0;
+  const after = num(c.balance) + total;
+  if (after <= num(c.credit_limit)) return true;
+  const msg = `تجاوز الحد الائتماني: الحد ${fmtN(c.credit_limit)} ريال، والرصيد بعد هذه الفاتورة ${fmtN(after)} ريال.`;
+  if (!can('admin')) { showErrors([msg + ' يلزم اعتماد المدير أو تحصيل جزء من الرصيد أولاً.']); return false; }
+  return confirm(msg + '\n\nبصفتك مديراً يمكنك اعتماد التجاوز. متابعة الإصدار؟');
+}
+
+/* ---------------------------------------------------------------- إعدادات التحصيل (للمدير) */
+async function loadFinanceSettings() {
+  try { const r = await query('finance_settings', 'select=*&id=eq.1'); const s = r[0]; if (!s) return;
+    $('fs-terms').value = s.default_terms_days; $('fs-enforce').checked = s.enforce_credit_limit; } catch (e) { /* اختياري */ }
+}
+async function saveFinanceSettings() {
+  const btn = $('btn-fs-save'); busy(btn, true);
+  try { await rpc('save_finance_settings', { p: { default_terms_days: toLatin($('fs-terms').value), enforce_credit_limit: $('fs-enforce').checked } });
+    setStatus('تم حفظ إعدادات التحصيل.', 'ok'); } catch (e) { showErrors([e.message]); } finally { busy(btn, false); }
+}
+
+function initAR() {
+  document.querySelectorAll('#ar-tabs button').forEach(b => b.addEventListener('click', () => showArTab(b.dataset.tab)));
+  $('btn-ar-pay').addEventListener('click', () => openPayForm(null));
+  $('btn-ar-run').addEventListener('click', loadAging);
+  $('ar-search').addEventListener('input', renderAging);
+  $('btn-ar-csv').addEventListener('click', () => AR.csv && exportCsv(AR.csv));
+  $('btn-ar-p-run').addEventListener('click', loadPaymentsList);
+  $('ar-branch').addEventListener('change', () => { loadArSummary(); showArTab(AR.tab); });
+  $('btn-fs-save').addEventListener('click', saveFinanceSettings);
+  $('inv-payment').addEventListener('change', refreshCreditHint);
+  window.addEventListener('afterprint', () => document.body.classList.remove('printing-sheet'));
+}
+
+
 window.addEventListener('DOMContentLoaded', () => {
+  initAR();
   $('btn-login').addEventListener('click', doLogin);
   $('login-pass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
   $('btn-toggle-signup').addEventListener('click', () => { toggleSignup(); loginMsg(''); });
@@ -2372,7 +2961,7 @@ window.addEventListener('DOMContentLoaded', () => {
   $('btn-company-reset').addEventListener('click', fillCompanyForm);
   $('btn-verify').addEventListener('click', verifyChain);
   $('cust-pick').addEventListener('change', pickCustomer);
-  $('buyer-name').addEventListener('input', () => { const c = S.customers.find(x => x.id === S.customerId); if (c && $('buyer-name').value.trim() !== c.name) S.customerId = null; });
+  $('buyer-name').addEventListener('input', () => { const c = S.customers.find(x => x.id === S.customerId); if (c && $('buyer-name').value.trim() !== c.name) { S.customerId = null; $('buyer-code').value = ''; refreshCreditHint(); } });
   $('c-search').addEventListener('input', renderCustomers); $('c-inactive').addEventListener('change', renderCustomers);
   $('i-search').addEventListener('input', renderItems); $('i-inactive').addEventListener('change', renderItems);
   $('btn-c-new').addEventListener('click', () => openCustomerForm(null));
@@ -2388,5 +2977,6 @@ window.addEventListener('DOMContentLoaded', () => {
   if (Session.get()) enter().catch(e => forceLogout(e.message)); else showOnly('view-login');
 });
 </script>
+<div id="print-sheet"></div>
 </body>
 </html>

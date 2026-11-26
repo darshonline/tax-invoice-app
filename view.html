@@ -155,9 +155,9 @@
   .lay-classic .qr-container, .lay-elegant .qr-container, .lay-thermal .qr-container { display: none !important; }
 
   /* عصري/بسيط/مؤسسي: الرقم والتواريخ والدفع في البطاقة العلوية، والعميل على جانبين */
-  .lay-modern.locked .doc-box .r-number, .lay-modern.locked .doc-box .r-issued, .lay-modern.locked .doc-box .r-supply, .lay-modern.locked .doc-box .r-payment,
-  .lay-minimal.locked .doc-box .r-number, .lay-minimal.locked .doc-box .r-issued, .lay-minimal.locked .doc-box .r-supply, .lay-minimal.locked .doc-box .r-payment,
-  .lay-corporate.locked .doc-box .r-number, .lay-corporate.locked .doc-box .r-issued, .lay-corporate.locked .doc-box .r-supply, .lay-corporate.locked .doc-box .r-payment { display: none; }
+  .lay-modern.locked .doc-box .r-number, .lay-modern.locked .doc-box .r-issued, .lay-modern.locked .doc-box .r-supply, .lay-modern.locked .doc-box .r-payment, .lay-modern.locked .doc-box .r-due,
+  .lay-minimal.locked .doc-box .r-number, .lay-minimal.locked .doc-box .r-issued, .lay-minimal.locked .doc-box .r-supply, .lay-minimal.locked .doc-box .r-payment, .lay-minimal.locked .doc-box .r-due,
+  .lay-corporate.locked .doc-box .r-number, .lay-corporate.locked .doc-box .r-issued, .lay-corporate.locked .doc-box .r-supply, .lay-corporate.locked .doc-box .r-payment, .lay-corporate.locked .doc-box .r-due { display: none; }
   .lay-modern.locked:not(.is-note) .doc-box, .lay-minimal.locked:not(.is-note) .doc-box, .lay-corporate.locked:not(.is-note) .doc-box { display: none; }
   .lay-modern.locked .grid-info, .lay-minimal.locked .grid-info, .lay-corporate.locked .grid-info { flex-direction: column; }
   .lay-modern.locked .cust-box:not(.empty-box), .lay-minimal.locked .cust-box:not(.empty-box), .lay-corporate.locked .cust-box:not(.empty-box) {
@@ -684,7 +684,7 @@ function render(d) {
   const info = el('div', { class: 'grid-info' }, [
     el('div', { class: 'info-box doc-box' }, [el('h4', { text: 'بيانات المستند', 'data-en': 'Document details' }),
       row('الرقم:', 'Invoice No.', d.number, true, 'r-number'), row('تاريخ ووقت الإصدار:', 'Issue date & time', riyadh(d.issued_at), false, 'r-issued'),
-      row('تاريخ التوريد:', 'Supply date', d.supply_date, false, 'r-supply'), row('طريقة الدفع:', 'Payment method', pay, false, 'r-payment'),
+      row('تاريخ التوريد:', 'Supply date', d.supply_date, false, 'r-supply'), row('طريقة الدفع:', 'Payment method', pay, false, 'r-payment'), row('تاريخ الاستحقاق:', 'Due date', d.due_date, false, 'r-due'),
       row('الفاتورة الأصلية:', 'Original invoice', d.ref_number, true, 'r-ref'), row('سبب الإصدار:', 'Reason', d.reason, false, 'r-reason'),
       qrSrc ? el('div', { class: 'doc-qr' }, el('img', { src: qrSrc, alt: 'ZATCA QR' })) : null]),
     el('div', { class: 'info-box cust-box' }, [el('h4', { text: 'بيانات العميل', 'data-en': 'Bill to' }),
@@ -717,7 +717,7 @@ function render(d) {
   if (L.accent && /^#[0-9a-fA-F]{6}$/.test(L.accent)) inv.style.setProperty('--accent', L.accent);
   const kv = (ar, en, val, cls) => el('div', {}, [el('span', { 'data-en': en, text: ar }), el('b', { class: cls, text: val })]);
   const hero = el('div', { class: 'hero' }, [
-    el('div', { class: 'hero-meta' }, [kv('رقم المستند', 'Invoice No.', d.number, 'hero-num ltr'), kv('تاريخ الإصدار', 'Issue date', riyadh(d.issued_at), 'hero-date'), kv('تاريخ التوريد', 'Supply date', d.supply_date, 'hero-supply'), kv('طريقة الدفع', 'Payment', pay, 'hero-pay')]),
+    el('div', { class: 'hero-meta' }, [kv('رقم المستند', 'Invoice No.', d.number, 'hero-num ltr'), kv('تاريخ الإصدار', 'Issue date', riyadh(d.issued_at), 'hero-date'), kv('تاريخ التوريد', 'Supply date', d.supply_date, 'hero-supply'), kv('طريقة الدفع', 'Payment', pay, 'hero-pay'), d.due_date ? kv('تاريخ الاستحقاق', 'Due date', d.due_date, 'hero-due-date') : null].filter(Boolean)),
     el('div', { class: 'hero-due' }, [el('span', { 'data-en': 'Amount due', text: 'الإجمالي المستحق' }), el('b', { class: 'hero-total ltr', text: fmt(d.total) + ' SAR' })])]);
   const sign = el('div', { class: 'sign-block' }, [['الختم', 'Company stamp'], ['التوقيع المعتمد', 'Authorized signature'], ['توقيع المستلم', 'Received by']].map(([a, e]) => el('div', { 'data-en': e, text: a })));
   const totCol = el('div', { class: 'totals-col' }, [tot, el('div', { class: 'amount-words' }, [el('div', { class: 'aw-ar', text: aw.ar }), el('div', { class: 'aw-en', text: aw.en })])]);

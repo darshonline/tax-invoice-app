@@ -184,6 +184,8 @@
 
   /* صفوف البيانات: القيمة بجانب العنوان دائماً */
   .info-row label { width: 128px; line-height: 1.3; }
+  .info-row input, .info-row select, .info-row textarea { min-width: 0; width: 100%; }
+  .info-row input[style*="max-width"] { width: auto; }
   .info-row .value, .info-row input, .info-row select, .info-row textarea, .info-row .ltr { text-align: right; }
 
   /* الإجماليات: التوقيعات بجانبها، والمبلغ كتابةً تحتها */
@@ -207,7 +209,7 @@
   .lay-modern.locked:not(.is-note) .doc-box, .lay-minimal.locked:not(.is-note) .doc-box, .lay-corporate.locked:not(.is-note) .doc-box { display: none; }
   .lay-modern.locked .grid-info, .lay-minimal.locked .grid-info, .lay-corporate.locked .grid-info { flex-direction: column; }
   .lay-modern.locked .cust-box:not(.empty-box), .lay-minimal.locked .cust-box:not(.empty-box), .lay-corporate.locked .cust-box:not(.empty-box) {
-    display: grid; grid-template-columns: 1fr 1fr; grid-auto-flow: dense; column-gap: 34px; align-content: start; }
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-auto-flow: dense; column-gap: 34px; align-content: start; }
   .lay-modern.locked .cust-box > h4, .lay-minimal.locked .cust-box > h4, .lay-corporate.locked .cust-box > h4,
   .lay-modern.locked .cust-box > .full-row, .lay-minimal.locked .cust-box > .full-row, .lay-corporate.locked .cust-box > .full-row { grid-column: 1 / -1; }
   .lay-modern.locked .cust-box > .id-row, .lay-modern.locked .cust-box > .id-h, .lay-minimal.locked .cust-box > .id-row, .lay-minimal.locked .cust-box > .id-h,
@@ -426,7 +428,7 @@
   .lay-compact .info-row { margin: 0; min-height: 0; border-bottom: 1px solid #ddd; align-items: stretch; }
   .lay-compact .info-row:last-child { border-bottom: 0; }
   .lay-compact.locked .doc-box { flex: 1; } .lay-compact.locked .cust-box { flex: 1.7; }
-  .lay-compact.locked .cust-box:not(.empty-box) { display: grid; grid-template-columns: 1fr 1fr; grid-auto-flow: dense; align-content: start; }
+  .lay-compact.locked .cust-box:not(.empty-box) { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-auto-flow: dense; align-content: start; }
   .lay-compact.locked .cust-box > h4, .lay-compact.locked .cust-box > .full-row { grid-column: 1 / -1; }
   .lay-compact.locked .cust-box > .id-row { grid-column: 1; } .lay-compact.locked .cust-box > .addr-row { grid-column: 2; border-inline-start: 1px solid #ddd; }
   .lay-compact.locked .cust-box > .info-row { border-bottom: 1px solid #ddd; }
@@ -487,19 +489,94 @@
   .lay-thermal .integrity { font-size: 7.5px; }
   .lay-thermal .watermark span { font-size: 28px; }
 
-  /* شاشات الجوال (رابط العميل) */
-  @media (max-width: 700px) {
-    .header-top { flex-wrap: wrap; } .company-en { text-align: right; direction: ltr; }
-    .totals-col { width: 100%; } .summary-section { flex-wrap: wrap; }
-    .lay-corporate { background: #fff; padding: 16px; min-height: 0; }
-    .lay-corporate .header-top, .lay-corporate .seller-ids, .lay-corporate .hero { float: none; width: auto; background: var(--ink); padding: 14px; margin: 0; }
-    .lay-corporate .qr-container { position: static; margin: 0 auto; }
-    .lay-corporate > :not(.header-top):not(.seller-ids):not(.hero):not(.watermark) { margin-right: 0; }
-    .lay-corporate > table.items-table { width: 100%; }
-    .lay-modern .hero, .lay-minimal .hero { flex-direction: column; align-items: stretch; }
-    .lay-minimal, .lay-elegant { padding: 22px; }
+  /* =================================================================
+     الشاشات الصغيرة (الهاتف وما دون 700px) — للعرض فقط؛ الطباعة تبقى A4 كاملة
+     ================================================================= */
+  @media screen and (max-width: 700px) {
+    .container:not(.lay-thermal) { padding: 16px 14px; }
+    .lay-classic { outline-offset: -6px; padding: 20px 16px; }
+    .lay-elegant { padding: 26px 18px; }
+    .lay-minimal { padding: 22px 16px; }
+    .lay-compact { padding: 10px; }
+    .watermark span { font-size: 34px; padding: 6px 16px; }
+
+    /* الترويسة: الشعار ثم العربي ثم الإنجليزي، متمركزة */
+    .header-top { flex-direction: column; align-items: center; text-align: center; gap: 6px; }
+    .company-ar, .company-en { text-align: center; flex: none; width: 100%; }
+    .co-logo { order: -1; max-height: 54px; }
+    .co-name { font-size: 16px; } .company-en .co-name { font-size: 13.5px; }
+    .seller-ids { gap: 2px 14px; font-size: 10.5px; }
+    .lay-classic .invoice-title-box, .lay-compact .invoice-title-box { width: auto; }
+    .lay-elegant .invoice-title-box { column-gap: 10px; }
+    .lay-minimal .invoice-title-box h2 { font-size: 32px; }
+
+    /* المربعات فوق بعضها */
+    .grid-info { flex-direction: column; gap: 12px; }
+    .grid-info > .info-box { width: 100%; }
+    .lay-elegant .info-box + .info-box { border-inline-start: 0; border-top: 1px solid var(--tint); padding-top: 10px; }
+    .info-row label { width: 112px; }
+    .lay-compact .info-row label { width: 104px; }
+    .lay-compact.locked .cust-box:not(.empty-box) { grid-template-columns: 1fr; }
+    .lay-compact.locked .cust-box > * { grid-column: 1 !important; border-inline-start: 0 !important; }
     .lay-modern.locked .cust-box:not(.empty-box), .lay-minimal.locked .cust-box:not(.empty-box), .lay-corporate.locked .cust-box:not(.empty-box) { grid-template-columns: 1fr; }
     .lay-modern.locked .cust-box > *, .lay-minimal.locked .cust-box > *, .lay-corporate.locked .cust-box > * { grid-column: 1 !important; }
+
+    /* البطاقة العلوية */
+    .lay-modern .hero, .lay-minimal .hero { flex-direction: column; align-items: stretch; gap: 12px; }
+    .lay-modern .hero-meta, .lay-minimal .hero-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 16px; }
+    .lay-modern .hero-due, .lay-minimal .hero-due { text-align: start; border-top: 1px solid #edf2f7; padding-top: 10px; }
+    .lay-modern .hero-due [data-en]::after, .lay-minimal .hero-due [data-en]::after { text-align: right; }
+    .lay-modern .hero-total, .lay-minimal .hero-total { font-size: 24px; }
+    .lay-modern { padding: 0 14px; }
+    .lay-modern .header-top, .lay-modern .seller-ids, .lay-modern .footer-bottom { margin-left: -14px; margin-right: -14px; padding-left: 14px; padding-right: 14px; }
+    .lay-modern .seller-ids { justify-content: center; }
+
+    /* المؤسسي: العمود الجانبي يصبح أشرطة علوية */
+    .lay-corporate { background: #fff; min-height: 0; }
+    .lay-corporate .header-top, .lay-corporate .seller-ids, .lay-corporate .hero { float: none; width: auto; background: var(--ink); margin: 0 -14px; padding: 14px; }
+    .lay-corporate .header-top { padding-top: 18px; align-items: center; } .lay-corporate .company-ar, .lay-corporate .company-en { text-align: center; }
+    .lay-corporate .co-logo { align-self: center; }
+    .lay-corporate .seller-ids { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; border-top: 1px solid rgba(255,255,255,.15); }
+    .lay-corporate .hero { margin-bottom: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; border-top: 1px solid rgba(255,255,255,.15); }
+    .lay-corporate .hero-meta { display: contents; }
+    .lay-corporate .hero-due { grid-column: 1 / -1; }
+    .lay-corporate > :not(.header-top):not(.seller-ids):not(.hero):not(.watermark) { margin-right: 0; }
+    .lay-corporate > table.items-table { width: 100%; }
+    .lay-corporate .qr-container { position: static; margin: 0 auto; width: auto; }
+
+    /* جدول البنود في المستند الصادر: الأعمدة الأساسية فقط */
+    .locked table.items-table { font-size: 11.5px; }
+    .locked table.items-table th, .locked table.items-table td { padding: 5px 3px; }
+    .locked table.items-table tr > :nth-child(1), .locked table.items-table tr > :nth-child(5),
+    .locked table.items-table tr > :nth-child(6), .locked table.items-table tr > :nth-child(7) { display: none; }
+    .locked table.items-table th[data-en]::after { font-size: .68em; }
+
+    /* الإجماليات بعرض الشاشة، ثم التوقيعات، ثم رمز QR */
+    .summary-section { flex-direction: column; align-items: stretch; gap: 14px; }
+    .totals-col { width: 100% !important; margin: 0 !important; order: 1; }
+    .sign-block { order: 2; }
+    .qr-container { order: 3; align-self: center; }
+    .lay-classic .sign-block { min-height: 80px; }
+    .lay-corporate .sign-block, .lay-elegant .sign-block { flex-direction: row; gap: 14px; padding-top: 34px; }
+  }
+
+  /* إدخال البنود على الهاتف: كل بند بطاقة بحقول واضحة (المسودة فقط) */
+  @media screen and (max-width: 700px) {
+    .container:not(.locked) #items-table, .container:not(.locked) #items-body { display: block; width: 100%; }
+    .container:not(.locked) #items-table thead { display: none; }
+    .container:not(.locked) #items-body tr { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; position: relative;
+      border: 1px solid #cbd5e0; border-radius: 10px; padding: 12px; margin-bottom: 10px; background: #fff; }
+    .container:not(.locked) #items-body td { display: block; border: 0 !important; padding: 0 !important; text-align: right; background: none !important; min-width: 0; }
+    .container:not(.locked) #items-body td[data-label]::before { content: attr(data-label); display: block; font-size: 11px; color: #718096; margin-bottom: 3px; font-weight: bold; }
+    .container:not(.locked) #items-body td:nth-child(1) { display: none; }
+    .container:not(.locked) #items-body td:nth-child(2) { grid-column: 1 / -1; padding-inline-end: 34px !important; }
+    .container:not(.locked) #items-body td:nth-child(9) { grid-column: 1 / -1; font-size: 15px; font-weight: bold; border-top: 1px dashed #cbd5e0 !important; padding-top: 8px !important; }
+    .container:not(.locked) #items-body td:nth-child(10) { position: absolute; top: 10px; left: 10px; }
+    .container:not(.locked) #items-body td:nth-child(10)::before { content: none !important; }
+    .container:not(.locked) #items-body td.num { direction: rtl; font-weight: bold; color: #1a202c; }
+    .container:not(.locked) #items-body td input, .container:not(.locked) #items-body td textarea { border: 1px solid #cbd5e0 !important; border-radius: 6px; background: #fff; text-align: right; font-size: 14px; padding: 7px 8px; min-height: 38px; }
+    .container:not(.locked) #items-body .cat-row { margin-top: 6px; }
+    .container:not(.locked) #items-body .cat-row select, .container:not(.locked) #items-body .cat-row input { min-height: 34px; font-size: 12px; }
   }
 
   @media print {
@@ -547,6 +624,54 @@
   .quick button { background: #edf2f7; border: none; border-radius: 4px; padding: 5px 9px; font-size: 12px; cursor: pointer; }
   .related a { color: #2b6cb0; cursor: pointer; text-decoration: underline; }
 
+
+  /* =================================================================
+     الواجهة المتجاوبة: الكمبيوتر · الجهاز اللوحي · الهاتف
+     ================================================================= */
+  .tabs { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+  .grid-info > .info-box { min-width: 0; }
+  @media (max-width: 1000px) {
+    .topbar { padding: 8px 12px; }
+    .topbar .tab { padding: 7px 10px; }
+  }
+  @media (max-width: 760px) {
+    body { padding-bottom: 20px; }
+    .topbar { gap: 4px 8px; padding: 6px 10px 0; }
+    .topbar .brand { margin-inline-end: 0; font-size: 14px; }
+    .topbar .who { font-size: 11px; max-width: 45vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .tabs { order: 5; flex: 1 0 100%; flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding: 4px 0 6px; margin: 0 -10px; padding-inline: 10px; }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tabs .tab { flex: 0 0 auto; white-space: nowrap; }
+    .page { margin-top: 10px; padding: 0 8px; }
+    .panel { padding: 12px; border-radius: 10px; }
+    .toolbar { gap: 6px; }
+    .toolbar > input, .toolbar > select { flex: 1 1 140px; min-width: 0; }
+    .toolbar .btn, .toolbar > span { flex: 0 0 auto; }
+    .btn { padding: 9px 14px; }   /* مساحة لمس أكبر */
+    .btn.sm { padding: 7px 11px; }
+    .form-grid { grid-template-columns: 1fr; }
+    .auth-card { margin: 24px 12px; padding: 22px 18px; }
+    .layout-cards { grid-template-columns: 1fr 1fr; gap: 8px; } .layout-card .thumb { height: 120px; }
+    .share-url { flex-wrap: wrap; } .share-url input { flex: 1 0 100%; }
+    #editor-toolbar .invoice-type-picker, #layout-picker, #branch-picker { display: flex; align-items: center; gap: 6px; flex: 1 1 100%; }
+    #editor-toolbar .invoice-type-picker select, #layout-picker select, #branch-picker select { flex: 1; min-width: 0; }
+    #editor-toolbar .spacer { display: none; }
+
+    /* الجداول الإدارية → بطاقات (العناوين تُضاف تلقائياً من رأس الجدول) */
+    table.grid thead { display: none; }
+    table.grid, table.grid tbody, table.grid tfoot, table.grid tr, table.grid td { display: block; width: 100%; }
+    table.grid tr { border: 1px solid #e2e8f0; border-radius: 10px; margin-bottom: 8px; padding: 6px 12px; background: #fff; }
+    table.grid tfoot tr { background: #f7fafc; border-color: #cbd5e0; }
+    table.grid td { border: 0 !important; padding: 5px 0; display: flex; justify-content: space-between; align-items: center; gap: 12px; text-align: left; min-height: 30px; }
+    table.grid td.num, table.grid td.ltr { direction: rtl; text-align: left; }
+    table.grid td[data-label]::before { content: attr(data-label); font-weight: bold; color: #4a5568; font-size: 12px; text-align: right; flex-shrink: 0; }
+    table.grid td[data-label=""]::before { content: none; }
+    table.grid td:empty { display: none; }
+    table.grid td.empty, table.grid td[colspan] { display: block; text-align: center; }
+    table.grid td input, table.grid td select { max-width: 62%; }
+    table.grid tr.click { cursor: pointer; } table.grid tr.click:active { background: #ebf8ff; }
+    .branch-grid td input { width: 62%; }
+  }
 </style>
 </head>
 <body>
@@ -578,6 +703,7 @@
 <div id="app" hidden>
   <nav class="topbar no-print">
     <span class="brand">🧾 الفواتير الضريبية</span>
+    <div class="tabs">
     <button class="tab" data-view="editor" data-roles="admin,issuer" type="button">فاتورة جديدة</button>
     <button class="tab" data-view="docs" type="button">المستندات</button>
     <button class="tab" data-view="customers" type="button">العملاء</button>
@@ -585,6 +711,7 @@
     <button class="tab" data-view="reports" type="button">التقارير</button>
     <button class="tab" data-view="settings" data-roles="admin" type="button">بيانات المنشأة</button>
     <button class="tab" data-view="users" data-roles="admin" type="button">المستخدمون</button>
+    </div>
     <span class="spacer"></span>
     <span class="who" id="who"></span>
     <button class="tab" id="btn-logout" type="button">خروج</button>
@@ -1000,6 +1127,20 @@ async function refreshSession() {
 const rpc = (fn, args = {}) => http('/rest/v1/rpc/' + fn, { method: 'POST', body: args });
 const query = (table, qs) => http('/rest/v1/' + table + '?' + qs);
 const zatcaFn = (action, extra = {}, timeout = 60000) => http('/functions/v1/zatca', { method: 'POST', body: { action, ...extra }, timeout });
+
+/* ---------------------------------------------------------------- عناوين الخلايا للجوال
+   كل خلية تأخذ اسم عمودها من رأس الجدول، فتُعرض الجداول كبطاقات مقروءة على الشاشات الصغيرة */
+function labelTables() {
+  document.querySelectorAll('#app table.grid, #items-table').forEach(tb => {
+    const heads = [...tb.querySelectorAll('thead th')].filter(th => !th.hidden).map(th => th.textContent.trim());   // الأعمدة المخفية لا تُرسم خلاياها
+    tb.querySelectorAll('tbody tr, tfoot tr').forEach(tr => [...tr.children].forEach((td, i) => {
+      if (td.tagName === 'TD' && !td.hasAttribute('colspan') && heads[i] !== undefined && td.dataset.label !== heads[i]) td.dataset.label = heads[i];
+    }));
+  });
+}
+let labelQueued = false;
+new MutationObserver(() => { if (!labelQueued) { labelQueued = true; requestAnimationFrame(() => { labelQueued = false; labelTables(); }); } })
+  .observe(document.documentElement, { childList: true, subtree: true });
 
 /* ---------------------------------------------------------------- الحالة */
 const S = { inv: null, invPreview: null, layoutOverride: null, branches: [], docBranch: null, profile: null, company: null, mode: 'invoice', ref: null, doc: null, view: null, vatex: [], zatca: null, zdoc: null };
